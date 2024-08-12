@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DomainModel.Models;
 
 namespace CookBook.UI
 {
@@ -22,41 +23,31 @@ namespace CookBook.UI
 
             List<Ingredient> ingredients = new List<Ingredient>();
 
-            Ingredient i1 = new Ingredient { Name = "apple", Type = "fruit", Weight =500 , KcalPer100g = 50, PricePer100g = 5.4m };
-            Ingredient i2 = new Ingredient { Name = "banana", Type = "fruit", Weight = 500, KcalPer100g = 90, PricePer100g = 0.4m };
-            Ingredient i3 = new Ingredient { Name = "orange", Type = "fruit", Weight = 500, KcalPer100g = 40, PricePer100g = 3 };
+            Ingredient i1 = new Ingredient { Name = "apple", Type = "fruit", Weight = 500, KcalPer100g = 50m, PricePer100g = 5 };
+            Ingredient i2 = new Ingredient { Name = "banana", Type = "fruit", Weight = 90, KcalPer100g = 20m, PricePer100g = 2 };
+            Ingredient i3 = new Ingredient { Name = "orange", Type = "fruit", Weight = 500, KcalPer100g = 507m, PricePer100g = 3.4m };
 
             ingredients.Add(i1);
             ingredients.Add(i2);
             ingredients.Add(i3);
 
+
             string message = "";
-
-            //            foreach( Ingredient i in ingredients ) {
-
-            //                message += $@"
-            //{i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g}";
-
-
-            //        }
+//            foreach(Ingredient i in ingredients)
+//            {
+//               message += $@"
+//{i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g} ";
+                
+//            }
+//            MessageBox.Show(message);
 
             ingredients.ForEach(i => { message += $@"
-            {i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g}"; });
+{i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g} "; }) ;
+
             MessageBox.Show(message);
 
         }
     }
-
-    public class Ingredient
-    {
-
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public decimal Weight { get; set; }
-        public decimal KcalPer100g { get; set; }
-
-        public decimal PricePer100g { get; set; }
-
-
-    }
 }
+
+
