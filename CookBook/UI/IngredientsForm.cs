@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DomainModel.Models;
+using DataAccessLayer;
 
 namespace CookBook.UI
 {
@@ -21,32 +22,51 @@ namespace CookBook.UI
         private void AddToFridgeBtn_Click(object sender, EventArgs e)
         {
 
-            List<Ingredient> ingredients = new List<Ingredient>();
+            Ingredient ingredient = new Ingredient();
+            ingredient.Name = NameTxt.Text;
+            ingredient.Type = TypeTxt.Text;
+            ingredient.Weight = WeightNum.Value;
+            ingredient.KcalPer100g = KcalPer100gNum.Value;
+            ingredient.PricePer100g = PricePer100gNum.Value;
 
-            Ingredient i1 = new Ingredient { Name = "apple", Type = "fruit", Weight = 500, KcalPer100g = 50m, PricePer100g = 5 };
-            Ingredient i2 = new Ingredient { Name = "banana", Type = "fruit", Weight = 90, KcalPer100g = 20m, PricePer100g = 2 };
-            Ingredient i3 = new Ingredient { Name = "orange", Type = "fruit", Weight = 500, KcalPer100g = 507m, PricePer100g = 3.4m };
+            IngredientsDataAccess db = new IngredientsDataAccess();
+            db.AddIngredient(ingredient);
 
-            ingredients.Add(i1);
-            ingredients.Add(i2);
-            ingredients.Add(i3);
+            ClearAllFields();
+            RefreshGridData();
+        }
 
 
-            string message = "";
-//            foreach(Ingredient i in ingredients)
-//            {
-//               message += $@"
-//{i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g} ";
-                
-//            }
-//            MessageBox.Show(message);
+        private void ClearAllFields()
+        {
 
-            ingredients.ForEach(i => { message += $@"
-{i.Name} {i.Type} {i.Weight} {i.KcalPer100g} {i.PricePer100g} "; }) ;
-
-            MessageBox.Show(message);
+            NameTxt.Text = string.Empty;
+            TypeTxt.Text = string.Empty;
+            WeightNum.Value = 1;
+            KcalPer100gNum.Value = 0;
+            PricePer100gNum.Value = 0;
 
         }
+
+        private void IngredientsForm_Load(object sender, EventArgs e)
+        {
+            IngredientsDataAccess db = new IngredientsDataAccess();
+            List<Ingredient> ingredients = db.GetIngredients();
+            IngredientsGrid.DataSource = ingredients;
+            RefreshGridData();
+        }
+
+
+        private void RefreshGridData()
+        {
+
+            IngredientsDataAccess db = new IngredientsDataAccess();
+            List<Ingredient> ingredients = db.GetIngredients();
+            IngredientsGrid.DataSource = ingredients;
+
+        }
+
+
     }
 }
 
