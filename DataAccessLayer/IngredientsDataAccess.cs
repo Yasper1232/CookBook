@@ -17,12 +17,11 @@ namespace DataAccessLayer
         public void AddIngredient(Ingredient ingredient) 
         {
 
-            string connectionString = ConfigurationManager.ConnectionStrings["CookBookConnectionString"].ConnectionString;
 
             string query = @"insert into Ingredients (Name,Weight,KcalPer100g,PricePer100g,Type)
                             values (@Name,@Weight,@KcalPer100g,@PricePer100g,@Type)";
 
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
                 connection.Execute(query, ingredient);
             }
@@ -35,11 +34,10 @@ namespace DataAccessLayer
         public List<Ingredient> GetIngredients()
         {
 
-            string connectionString = ConfigurationManager.ConnectionStrings["CookBookConnectionString"].ConnectionString;
 
             string query = "select * from Ingredients";
 
-            using (IDbConnection connection = new SqlConnection(connectionString))
+            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
                 List<Ingredient> ingredients = connection.Query<Ingredient>(query).ToList();
                 return ingredients;

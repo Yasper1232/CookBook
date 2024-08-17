@@ -9,28 +9,29 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DomainModel.Models;
 using DataAccessLayer;
+using System.Runtime.InteropServices;
 
 namespace CookBook.UI
 {
     public partial class IngredientsForm : Form
     {
+
+        readonly IngredientsDataAccess _db;
+
         public IngredientsForm()
         {
             InitializeComponent();
+            _db = new IngredientsDataAccess();
         }
 
         private void AddToFridgeBtn_Click(object sender, EventArgs e)
         {
 
-            Ingredient ingredient = new Ingredient();
-            ingredient.Name = NameTxt.Text;
-            ingredient.Type = TypeTxt.Text;
-            ingredient.Weight = WeightNum.Value;
-            ingredient.KcalPer100g = KcalPer100gNum.Value;
-            ingredient.PricePer100g = PricePer100gNum.Value;
+            Ingredient ingredient = new Ingredient(NameTxt.Text, TypeTxt.Text,
+                WeightNum.Value, KcalPer100gNum.Value, PricePer100gNum.Value);
 
-            IngredientsDataAccess db = new IngredientsDataAccess();
-            db.AddIngredient(ingredient);
+
+            _db.AddIngredient(ingredient);
 
             ClearAllFields();
             RefreshGridData();
@@ -54,15 +55,40 @@ namespace CookBook.UI
             List<Ingredient> ingredients = db.GetIngredients();
             IngredientsGrid.DataSource = ingredients;
             RefreshGridData();
+            CustomizeGridAppearance();
+
+
+
         }
 
 
         private void RefreshGridData()
         {
 
-            IngredientsDataAccess db = new IngredientsDataAccess();
-            List<Ingredient> ingredients = db.GetIngredients();
-            IngredientsGrid.DataSource = ingredients;
+            IngredientsGrid.DataSource = _db.GetIngredients(); ;
+
+        }
+
+
+        private void CustomizeGridAppearance()
+        {
+
+            // IngredientsGrid.AutoSizeColumnsMode =
+            //   DataGridViewAutoSizeColumnMode.Fill;
+
+            IngredientsGrid.AutoGenerateColumns = false;
+
+            DataGridViewColumn[] columns = new DataGridViewColumn[6];
+            columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id",Visible = false };
+            columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name",HeaderText = "Name" };
+            columns[2] = new DataGridViewTextBoxColumn() {DataPropertyName = "Type",HeaderText = "Type" };
+            columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Weight", HeaderText = "Weight" };
+            columns[4] = new DataGridViewTextBoxColumn() { DataPropertyName = "PricePer100g", HeaderText = "Price(100g)" };
+            columns[5] = new DataGridViewTextBoxColumn() { DataPropertyName = "KcalPer100g", HeaderText = "Kcal(100g)" };
+
+            IngredientsGrid.Columns.Clear();
+            IngredientsGrid.Columns.AddRange(columns);
+
 
         }
 

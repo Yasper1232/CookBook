@@ -148,6 +148,8 @@
             // 
             // IngredientsGrid
             // 
+            IngredientsGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            IngredientsGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             IngredientsGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             IngredientsGrid.Location = new Point(12, 29);
             IngredientsGrid.Name = "IngredientsGrid";
