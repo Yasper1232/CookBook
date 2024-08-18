@@ -8,13 +8,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using DataAccessLayer.Contracts;
 using DomainModel.Models;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.Repositories
 {
-    public class IngredientsDataAccess
+    public class IngredientsRepository : IIngredientsRepository
     {
-        public void AddIngredient(Ingredient ingredient) 
+        public void AddIngredient(Ingredient ingredient)
         {
 
 
@@ -26,7 +27,7 @@ namespace DataAccessLayer
                 connection.Execute(query, ingredient);
             }
 
-            
+
 
         }
 
@@ -39,8 +40,8 @@ namespace DataAccessLayer
 
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
-                List<Ingredient> ingredients = connection.Query<Ingredient>(query).ToList();
-                return ingredients;
+                return connection.Query<Ingredient>(query).ToList();
+
             }
 
 

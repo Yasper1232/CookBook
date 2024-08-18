@@ -11,7 +11,7 @@ namespace DataAccessLayer
     {
 
         
-        public static string ConnectionString
+        internal static string ConnectionString
         {
             get
             {

@@ -8,20 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DomainModel.Models;
-using DataAccessLayer;
 using System.Runtime.InteropServices;
+using DataAccessLayer.Repositories;
+using DataAccessLayer.Contracts;
 
 namespace CookBook.UI
 {
     public partial class IngredientsForm : Form
     {
 
-        readonly IngredientsDataAccess _db;
+        readonly IIngredientsRepository _ingredientsRepository;
 
-        public IngredientsForm()
+        public IngredientsForm(IIngredientsRepository ingredientsRepository)
         {
             InitializeComponent();
-            _db = new IngredientsDataAccess();
+            _ingredientsRepository = ingredientsRepository;
         }
 
         private void AddToFridgeBtn_Click(object sender, EventArgs e)
@@ -31,7 +32,7 @@ namespace CookBook.UI
                 WeightNum.Value, KcalPer100gNum.Value, PricePer100gNum.Value);
 
 
-            _db.AddIngredient(ingredient);
+            _ingredientsRepository.AddIngredient(ingredient);
 
             ClearAllFields();
             RefreshGridData();
@@ -51,7 +52,7 @@ namespace CookBook.UI
 
         private void IngredientsForm_Load(object sender, EventArgs e)
         {
-            IngredientsDataAccess db = new IngredientsDataAccess();
+            IngredientsRepository db = new IngredientsRepository();
             List<Ingredient> ingredients = db.GetIngredients();
             IngredientsGrid.DataSource = ingredients;
             RefreshGridData();
@@ -65,7 +66,7 @@ namespace CookBook.UI
         private void RefreshGridData()
         {
 
-            IngredientsGrid.DataSource = _db.GetIngredients(); ;
+            IngredientsGrid.DataSource = _ingredientsRepository.GetIngredients(); ;
 
         }
 
