@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public List<Ingredient> GetIngredients()
+        public List<Ingredient> GetIngredients(string? name ="")
         {
 
             List<Ingredient> ingredients = new List<Ingredient>();
