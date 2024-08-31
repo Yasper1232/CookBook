@@ -47,7 +47,7 @@ namespace CookBook.UI
             WeightNum.Value = 1;
             KcalPer100gNum.Value = 0;
             PricePer100gNum.Value = 0;
-
+            SearchTxt.Text = string.Empty;
         }
 
         private void IngredientsForm_Load(object sender, EventArgs e)
@@ -66,7 +66,7 @@ namespace CookBook.UI
         private void RefreshGridData()
         {
 
-            IngredientsGrid.DataSource = _ingredientsRepository.GetIngredients(); ;
+            IngredientsGrid.DataSource = _ingredientsRepository.GetIngredients(SearchTxt.Text);
 
         }
 
@@ -80,9 +80,9 @@ namespace CookBook.UI
             IngredientsGrid.AutoGenerateColumns = false;
 
             DataGridViewColumn[] columns = new DataGridViewColumn[6];
-            columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id",Visible = false };
-            columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name",HeaderText = "Name" };
-            columns[2] = new DataGridViewTextBoxColumn() {DataPropertyName = "Type",HeaderText = "Type" };
+            columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id", Visible = false };
+            columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name", HeaderText = "Name" };
+            columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Type", HeaderText = "Type" };
             columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Weight", HeaderText = "Weight" };
             columns[4] = new DataGridViewTextBoxColumn() { DataPropertyName = "PricePer100g", HeaderText = "Price(100g)" };
             columns[5] = new DataGridViewTextBoxColumn() { DataPropertyName = "KcalPer100g", HeaderText = "Kcal(100g)" };
@@ -93,7 +93,16 @@ namespace CookBook.UI
 
         }
 
+        private void SearchBtn_Click(object sender, EventArgs e)
+        {
+            RefreshGridData();
+        }
 
+        private void ClearAllFieldsButton_Click(object sender, EventArgs e)
+        {
+            ClearAllFields();
+            RefreshGridData();
+        }
     }
 }
 

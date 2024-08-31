@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataAccessLayer.Repositories
 {
@@ -26,9 +27,11 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public List<Ingredient> GetIngredients()
+        public List<Ingredient> GetIngredients(string? name="")
         {
             string query = "select * from Ingredients";
+            if(!string.IsNullOrEmpty(name))
+                query+= $" where Name like '{name}%'";
 
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
@@ -36,14 +39,6 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public List<Ingredient> SearchIngredients(string name)
-        {
-            string query = $"select * from Ingredients where Name like '{name}%'";
-
-            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
-            {
-                return connection.Query<Ingredient>(query).ToList();
-            }
-        }
+     
     }
 }
