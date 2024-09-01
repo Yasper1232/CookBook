@@ -25,14 +25,17 @@ namespace CookBook.UI
             _ingredientsRepository = ingredientsRepository;
         }
 
-        private void AddToFridgeBtn_Click(object sender, EventArgs e)
+        private async void AddToFridgeBtn_Click(object sender, EventArgs e)
         {
+            if (!IsValid())
+                return;
 
             Ingredient ingredient = new Ingredient(NameTxt.Text, TypeTxt.Text,
                 WeightNum.Value, KcalPer100gNum.Value, PricePer100gNum.Value);
 
-
-            _ingredientsRepository.AddIngredient(ingredient);
+            AddToFridgeBtn.Enabled = false;
+           await _ingredientsRepository.AddIngredient(ingredient);
+            AddToFridgeBtn.Enabled = true;
 
             ClearAllFields();
             RefreshGridData();
@@ -52,9 +55,9 @@ namespace CookBook.UI
 
         private void IngredientsForm_Load(object sender, EventArgs e)
         {
-            IngredientsRepository db = new IngredientsRepository();
-            List<Ingredient> ingredients = db.GetIngredients();
-            IngredientsGrid.DataSource = ingredients;
+            //IngredientsRepository db = new IngredientsRepository();
+            //List<Ingredient> ingredients = db.GetIngredients();
+            //IngredientsGrid.DataSource = ingredients;
             RefreshGridData();
             CustomizeGridAppearance();
 
@@ -63,10 +66,10 @@ namespace CookBook.UI
         }
 
 
-        private void RefreshGridData()
+        private async void RefreshGridData()
         {
 
-            IngredientsGrid.DataSource = _ingredientsRepository.GetIngredients(SearchTxt.Text);
+            IngredientsGrid.DataSource = await _ingredientsRepository.GetIngredients(SearchTxt.Text);
 
         }
 
@@ -92,17 +95,76 @@ namespace CookBook.UI
 
 
         }
-
-        private void SearchBtn_Click(object sender, EventArgs e)
-        {
-            RefreshGridData();
-        }
-
         private void ClearAllFieldsButton_Click(object sender, EventArgs e)
         {
             ClearAllFields();
-            RefreshGridData();
         }
+
+        private async void SearchTxt_TextChanged(object sender, EventArgs e)
+        {
+
+            int lengthBeforePause=SearchTxt.Text.Length;
+
+           await Task.Delay(300);
+
+            int lengthAfterPause = SearchTxt.Text.Length;
+
+            if (lengthBeforePause == lengthAfterPause)
+            RefreshGridData();
+
+     
+        }
+
+        private bool IsValid()
+        {
+
+            bool IsValid = true;
+            string message = "";
+
+            if(string.IsNullOrEmpty(NameTxt.Text))
+            {
+                IsValid = false;
+                message += "Please enter name.\n\n";
+
+            }
+
+            if (string.IsNullOrEmpty(TypeTxt.Text))
+            {
+                IsValid = false;
+                message += "Please enter type.\n\n";
+
+            }
+
+            if (WeightNum.Value<=0)
+            {
+                IsValid = false;
+                message += "Weight must be greater than 0.\n\n";
+
+            }
+
+            if (KcalPer100gNum.Value < 0)
+            {
+                IsValid = false;
+                message += "Kcal must be greater than or equal to 0.\n\n";
+
+            }
+            if (PricePer100gNum.Value<=0)
+            {
+                IsValid = false;
+                message += "Price must be greater than 0.\n\n";
+
+            }
+
+            if (!IsValid) 
+                MessageBox.Show(message, "Form not valid!");
+               
+            
+            return IsValid;
+            
+        }
+
+
+
     }
 }
 

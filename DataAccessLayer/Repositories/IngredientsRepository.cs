@@ -15,7 +15,7 @@ namespace DataAccessLayer.Repositories
 {
     public class IngredientsRepository : IIngredientsRepository
     {
-        public void AddIngredient(Ingredient ingredient)
+        public async Task AddIngredient(Ingredient ingredient)
         {
             string query = @"insert into Ingredients 
                 (Name, Weight, KcalPer100g, PricePer100g, Type) 
@@ -23,19 +23,22 @@ namespace DataAccessLayer.Repositories
 
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
-                connection.Execute(query, ingredient);
+              await connection.ExecuteAsync(query, ingredient);
             }
         }
 
-        public List<Ingredient> GetIngredients(string? name="")
+        public async Task<List<Ingredient>> GetIngredients(string? name="")
         {
             string query = "select * from Ingredients";
             if(!string.IsNullOrEmpty(name))
                 query+= $" where Name like '{name}%'";
 
+            //string delay = " WAITFOR DELAY '00:00:02'";
+            //query += delay;
+
             using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
             {
-                return connection.Query<Ingredient>(query).ToList();
+                return (await connection.QueryAsync<Ingredient>(query)).ToList();
             }
         }
 

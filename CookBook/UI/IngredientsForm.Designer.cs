@@ -41,7 +41,6 @@
             AddToFridgeBtn = new Button();
             IngredientsGrid = new DataGridView();
             SearchTxt = new TextBox();
-            SearchBtn = new Button();
             ClearAllFieldsButton = new Button();
             ((System.ComponentModel.ISupportInitialize)WeightNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)KcalPer100gNum).BeginInit();
@@ -141,9 +140,9 @@
             // 
             // AddToFridgeBtn
             // 
-            AddToFridgeBtn.Location = new Point(1166, 519);
+            AddToFridgeBtn.Location = new Point(958, 519);
             AddToFridgeBtn.Name = "AddToFridgeBtn";
-            AddToFridgeBtn.Size = new Size(303, 48);
+            AddToFridgeBtn.Size = new Size(511, 48);
             AddToFridgeBtn.TabIndex = 10;
             AddToFridgeBtn.Text = "Add to fridge";
             AddToFridgeBtn.UseVisualStyleBackColor = true;
@@ -165,24 +164,15 @@
             SearchTxt.Location = new Point(42, 69);
             SearchTxt.Name = "SearchTxt";
             SearchTxt.PlaceholderText = "Type Ingredient name...";
-            SearchTxt.Size = new Size(599, 43);
+            SearchTxt.Size = new Size(858, 43);
             SearchTxt.TabIndex = 12;
-            // 
-            // SearchBtn
-            // 
-            SearchBtn.Location = new Point(682, 69);
-            SearchBtn.Name = "SearchBtn";
-            SearchBtn.Size = new Size(218, 43);
-            SearchBtn.TabIndex = 13;
-            SearchBtn.Text = "Search";
-            SearchBtn.UseVisualStyleBackColor = true;
-            SearchBtn.Click += SearchBtn_Click;
+            SearchTxt.TextChanged += SearchTxt_TextChanged;
             // 
             // ClearAllFieldsButton
             // 
-            ClearAllFieldsButton.Location = new Point(1166, 594);
+            ClearAllFieldsButton.Location = new Point(958, 594);
             ClearAllFieldsButton.Name = "ClearAllFieldsButton";
-            ClearAllFieldsButton.Size = new Size(303, 52);
+            ClearAllFieldsButton.Size = new Size(511, 52);
             ClearAllFieldsButton.TabIndex = 14;
             ClearAllFieldsButton.Text = "Clear all fields";
             ClearAllFieldsButton.UseVisualStyleBackColor = true;
@@ -194,7 +184,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1531, 658);
             Controls.Add(ClearAllFieldsButton);
-            Controls.Add(SearchBtn);
             Controls.Add(SearchTxt);
             Controls.Add(IngredientsGrid);
             Controls.Add(AddToFridgeBtn);
@@ -236,7 +225,6 @@
         private Button AddToFridgeBtn;
         private DataGridView IngredientsGrid;
         private TextBox SearchTxt;
-        private Button SearchBtn;
         private Button ClearAllFieldsButton;
     }
 }
