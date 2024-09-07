@@ -42,6 +42,38 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-     
+
+        public async Task DeleteIngredient(Ingredient ingredient)
+        {
+            string query = @$"delete from Ingredients where Id={ingredient.Id}";
+
+            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+            {
+                await connection.ExecuteAsync(query, ingredient);
+            }
+        }
+
+        public async Task EditIngredient(Ingredient ingredient)
+        {
+            string query = @"update Ingredients
+                             set
+                             Name = @Name,
+                             Weight = @Weight,
+                             KcalPer100g = @KcalPer100g,
+                             PricePer100g = @PricePer100g,
+                             Type = @Type
+                             where Id = @Id";
+                                                                             
+                              
+                              
+                              
+
+            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+            {
+                await connection.ExecuteAsync(query, ingredient);
+            }
+        }
+
+
     }
 }

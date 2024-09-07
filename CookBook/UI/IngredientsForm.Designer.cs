@@ -42,6 +42,7 @@
             IngredientsGrid = new DataGridView();
             SearchTxt = new TextBox();
             ClearAllFieldsButton = new Button();
+            EditIngredientBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)WeightNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)KcalPer100gNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)PricePer100gNum).BeginInit();
@@ -51,7 +52,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(958, 161);
+            label1.Location = new Point(1165, 106);
             label1.Margin = new Padding(6, 0, 6, 0);
             label1.Name = "label1";
             label1.Size = new Size(91, 38);
@@ -61,7 +62,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(958, 224);
+            label2.Location = new Point(1165, 169);
             label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
             label2.Size = new Size(75, 38);
@@ -71,7 +72,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(958, 294);
+            label3.Location = new Point(1165, 239);
             label3.Name = "label3";
             label3.Size = new Size(137, 38);
             label3.TabIndex = 2;
@@ -80,7 +81,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(958, 364);
+            label4.Location = new Point(1165, 309);
             label4.Name = "label4";
             label4.Size = new Size(152, 38);
             label4.TabIndex = 3;
@@ -89,7 +90,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(958, 438);
+            label5.Location = new Point(1165, 383);
             label5.Name = "label5";
             label5.Size = new Size(163, 38);
             label5.TabIndex = 4;
@@ -97,14 +98,14 @@
             // 
             // NameTxt
             // 
-            NameTxt.Location = new Point(1166, 156);
+            NameTxt.Location = new Point(1373, 101);
             NameTxt.Name = "NameTxt";
             NameTxt.Size = new Size(303, 43);
             NameTxt.TabIndex = 5;
             // 
             // TypeTxt
             // 
-            TypeTxt.Location = new Point(1166, 224);
+            TypeTxt.Location = new Point(1373, 169);
             TypeTxt.Name = "TypeTxt";
             TypeTxt.Size = new Size(303, 43);
             TypeTxt.TabIndex = 6;
@@ -112,7 +113,7 @@
             // WeightNum
             // 
             WeightNum.DecimalPlaces = 2;
-            WeightNum.Location = new Point(1166, 294);
+            WeightNum.Location = new Point(1373, 239);
             WeightNum.Maximum = new decimal(new int[] { 999999, 0, 0, 0 });
             WeightNum.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             WeightNum.Name = "WeightNum";
@@ -123,7 +124,7 @@
             // KcalPer100gNum
             // 
             KcalPer100gNum.DecimalPlaces = 2;
-            KcalPer100gNum.Location = new Point(1166, 364);
+            KcalPer100gNum.Location = new Point(1373, 309);
             KcalPer100gNum.Maximum = new decimal(new int[] { 900, 0, 0, 0 });
             KcalPer100gNum.Name = "KcalPer100gNum";
             KcalPer100gNum.Size = new Size(303, 43);
@@ -132,7 +133,7 @@
             // PricePer100gNum
             // 
             PricePer100gNum.DecimalPlaces = 2;
-            PricePer100gNum.Location = new Point(1166, 438);
+            PricePer100gNum.Location = new Point(1373, 383);
             PricePer100gNum.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
             PricePer100gNum.Name = "PricePer100gNum";
             PricePer100gNum.Size = new Size(303, 43);
@@ -140,7 +141,7 @@
             // 
             // AddToFridgeBtn
             // 
-            AddToFridgeBtn.Location = new Point(958, 519);
+            AddToFridgeBtn.Location = new Point(1165, 464);
             AddToFridgeBtn.Name = "AddToFridgeBtn";
             AddToFridgeBtn.Size = new Size(511, 48);
             AddToFridgeBtn.TabIndex = 10;
@@ -156,21 +157,22 @@
             IngredientsGrid.Location = new Point(33, 144);
             IngredientsGrid.Name = "IngredientsGrid";
             IngredientsGrid.RowHeadersWidth = 51;
-            IngredientsGrid.Size = new Size(867, 423);
+            IngredientsGrid.Size = new Size(1113, 447);
             IngredientsGrid.TabIndex = 11;
+            IngredientsGrid.CellClick += IngredientsGrid_CellClick;
             // 
             // SearchTxt
             // 
             SearchTxt.Location = new Point(42, 69);
             SearchTxt.Name = "SearchTxt";
             SearchTxt.PlaceholderText = "Type Ingredient name...";
-            SearchTxt.Size = new Size(858, 43);
+            SearchTxt.Size = new Size(1104, 43);
             SearchTxt.TabIndex = 12;
             SearchTxt.TextChanged += SearchTxt_TextChanged;
             // 
             // ClearAllFieldsButton
             // 
-            ClearAllFieldsButton.Location = new Point(958, 594);
+            ClearAllFieldsButton.Location = new Point(1165, 539);
             ClearAllFieldsButton.Name = "ClearAllFieldsButton";
             ClearAllFieldsButton.Size = new Size(511, 52);
             ClearAllFieldsButton.TabIndex = 14;
@@ -178,11 +180,22 @@
             ClearAllFieldsButton.UseVisualStyleBackColor = true;
             ClearAllFieldsButton.Click += ClearAllFieldsButton_Click;
             // 
+            // EditIngredientBtn
+            // 
+            EditIngredientBtn.Location = new Point(1165, 464);
+            EditIngredientBtn.Name = "EditIngredientBtn";
+            EditIngredientBtn.Size = new Size(511, 48);
+            EditIngredientBtn.TabIndex = 15;
+            EditIngredientBtn.Text = "Edit Ingredient";
+            EditIngredientBtn.UseVisualStyleBackColor = true;
+            EditIngredientBtn.Click += EditIngredientBtn_Click;
+            // 
             // IngredientsForm
             // 
             AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1531, 658);
+            ClientSize = new Size(1856, 992);
+            Controls.Add(EditIngredientBtn);
             Controls.Add(ClearAllFieldsButton);
             Controls.Add(SearchTxt);
             Controls.Add(IngredientsGrid);
@@ -226,5 +239,6 @@
         private DataGridView IngredientsGrid;
         private TextBox SearchTxt;
         private Button ClearAllFieldsButton;
+        private Button EditIngredientBtn;
     }
 }

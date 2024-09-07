@@ -19,6 +19,7 @@ namespace CookBook.UI
 
         readonly IIngredientsRepository _ingredientsRepository;
 
+        private int _ingredientToEditId;
         public IngredientsForm(IIngredientsRepository ingredientsRepository)
         {
             InitializeComponent();
@@ -34,7 +35,7 @@ namespace CookBook.UI
                 WeightNum.Value, KcalPer100gNum.Value, PricePer100gNum.Value);
 
             AddToFridgeBtn.Enabled = false;
-           await _ingredientsRepository.AddIngredient(ingredient);
+            await _ingredientsRepository.AddIngredient(ingredient);
             AddToFridgeBtn.Enabled = true;
 
             ClearAllFields();
@@ -61,7 +62,8 @@ namespace CookBook.UI
             RefreshGridData();
             CustomizeGridAppearance();
 
-
+            AddToFridgeBtn.Visible = true;
+            EditIngredientBtn.Visible = false;
 
         }
 
@@ -82,13 +84,31 @@ namespace CookBook.UI
 
             IngredientsGrid.AutoGenerateColumns = false;
 
-            DataGridViewColumn[] columns = new DataGridViewColumn[6];
+            DataGridViewColumn[] columns = new DataGridViewColumn[8];
             columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id", Visible = false };
             columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name", HeaderText = "Name" };
             columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Type", HeaderText = "Type" };
             columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Weight", HeaderText = "Weight" };
             columns[4] = new DataGridViewTextBoxColumn() { DataPropertyName = "PricePer100g", HeaderText = "Price(100g)" };
             columns[5] = new DataGridViewTextBoxColumn() { DataPropertyName = "KcalPer100g", HeaderText = "Kcal(100g)" };
+
+            columns[6] = new DataGridViewButtonColumn()
+            {
+                Text = "Delete",
+                Name = "DeleteBtn",
+                HeaderText = "",
+                UseColumnTextForButtonValue = true
+            };
+
+            columns[7] = new DataGridViewButtonColumn()
+            {
+
+                Text = "Edit",
+                Name = "EditBtn",
+                HeaderText = "",
+                UseColumnTextForButtonValue = true
+
+            };
 
             IngredientsGrid.Columns.Clear();
             IngredientsGrid.Columns.AddRange(columns);
@@ -103,16 +123,16 @@ namespace CookBook.UI
         private async void SearchTxt_TextChanged(object sender, EventArgs e)
         {
 
-            int lengthBeforePause=SearchTxt.Text.Length;
+            int lengthBeforePause = SearchTxt.Text.Length;
 
-           await Task.Delay(300);
+            await Task.Delay(300);
 
             int lengthAfterPause = SearchTxt.Text.Length;
 
             if (lengthBeforePause == lengthAfterPause)
-            RefreshGridData();
+                RefreshGridData();
 
-     
+
         }
 
         private bool IsValid()
@@ -121,11 +141,29 @@ namespace CookBook.UI
             bool IsValid = true;
             string message = "";
 
-            if(string.IsNullOrEmpty(NameTxt.Text))
+            if (string.IsNullOrEmpty(NameTxt.Text))
             {
                 IsValid = false;
                 message += "Please enter name.\n\n";
 
+            }
+            else
+            {
+
+
+                List<Ingredient> allIngredients = (List<Ingredient>)
+                    IngredientsGrid.DataSource;
+
+
+                foreach (Ingredient ingredient in allIngredients)
+                {
+                    if (ingredient.Name.ToLower() == NameTxt.Text.ToLower())
+                    {
+
+                        MessageBox.Show("That ingredient already exists!, Form not valid!");
+                        return false;
+                    }
+                }
             }
 
             if (string.IsNullOrEmpty(TypeTxt.Text))
@@ -135,7 +173,7 @@ namespace CookBook.UI
 
             }
 
-            if (WeightNum.Value<=0)
+            if (WeightNum.Value <= 0)
             {
                 IsValid = false;
                 message += "Weight must be greater than 0.\n\n";
@@ -148,23 +186,84 @@ namespace CookBook.UI
                 message += "Kcal must be greater than or equal to 0.\n\n";
 
             }
-            if (PricePer100gNum.Value<=0)
+            if (PricePer100gNum.Value <= 0)
             {
                 IsValid = false;
                 message += "Price must be greater than 0.\n\n";
 
             }
 
-            if (!IsValid) 
+            if (!IsValid)
                 MessageBox.Show(message, "Form not valid!");
-               
-            
+
+
             return IsValid;
-            
+
         }
 
+        private async void IngredientsGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
 
 
+            if (e.RowIndex >= 0 && IngredientsGrid.CurrentCell is DataGridViewButtonCell)
+            {
+                Ingredient clickedIngredient = (Ingredient)IngredientsGrid.Rows[e.RowIndex].DataBoundItem;
+
+
+                if (IngredientsGrid.CurrentCell.OwningColumn.Name == "DeleteBtn")
+                {
+
+                    await _ingredientsRepository.DeleteIngredient(clickedIngredient);
+                    RefreshGridData();
+
+                }
+                else if ((IngredientsGrid.CurrentCell.OwningColumn.Name == "EditBtn"))
+                {
+
+                    FillFormForEdit(clickedIngredient);
+                    _ingredientToEditId = clickedIngredient.Id;
+                }
+
+
+
+            }
+
+        }
+
+        private void FillFormForEdit(Ingredient clickedIngredient)
+        {
+
+            NameTxt.Text = clickedIngredient.Name;
+            TypeTxt.Text = clickedIngredient.Type;
+            WeightNum.Value = clickedIngredient.Weight;
+            PricePer100gNum.Value = clickedIngredient.PricePer100g;
+            KcalPer100gNum.Value = clickedIngredient.KcalPer100g;
+
+
+            AddToFridgeBtn.Visible = false;
+            EditIngredientBtn.Visible = true;
+        }
+
+        private async void EditIngredientBtn_Click(object sender, EventArgs e)
+        {
+
+            if (!IsValid())
+            {
+                return;
+            }
+                Ingredient ingredient = new Ingredient(NameTxt.Text,TypeTxt.Text,WeightNum.Value,KcalPer100gNum.Value,PricePer100gNum.Value,_ingredientToEditId);
+
+                await _ingredientsRepository.EditIngredient(ingredient);
+                ClearAllFields();
+                RefreshGridData();
+
+            EditIngredientBtn.Visible = false;
+            AddToFridgeBtn.Visible = true;
+
+            _ingredientToEditId = 0;
+            
+
+        }
     }
 }
 
