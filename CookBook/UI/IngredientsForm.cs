@@ -118,6 +118,12 @@ namespace CookBook.UI
         private void ClearAllFieldsButton_Click(object sender, EventArgs e)
         {
             ClearAllFields();
+
+            AddToFridgeBtn.Visible = true;
+
+            EditIngredientBtn.Visible = false;
+            _ingredientToEditId= 0;
+
         }
 
         private async void SearchTxt_TextChanged(object sender, EventArgs e)
@@ -147,24 +153,24 @@ namespace CookBook.UI
                 message += "Please enter name.\n\n";
 
             }
-            else
-            {
+            //else if(_ingredientToEditId==0)
+            //{
 
 
-                List<Ingredient> allIngredients = (List<Ingredient>)
-                    IngredientsGrid.DataSource;
+            //    List<Ingredient> allIngredients = (List<Ingredient>)
+            //        IngredientsGrid.DataSource;
 
 
-                foreach (Ingredient ingredient in allIngredients)
-                {
-                    if (ingredient.Name.ToLower() == NameTxt.Text.ToLower())
-                    {
+            //    foreach (Ingredient ingredient in allIngredients)
+            //    {
+            //        if (ingredient.Name.ToLower() == NameTxt.Text.ToLower())
+            //        {
 
-                        MessageBox.Show("That ingredient already exists!, Form not valid!");
-                        return false;
-                    }
-                }
-            }
+            //            MessageBox.Show("That ingredient already exists!, Form not valid!");
+            //            return false;
+            //        }
+            //    }
+            //}
 
             if (string.IsNullOrEmpty(TypeTxt.Text))
             {
@@ -221,7 +227,6 @@ namespace CookBook.UI
                 {
 
                     FillFormForEdit(clickedIngredient);
-                    _ingredientToEditId = clickedIngredient.Id;
                 }
 
 
@@ -232,6 +237,7 @@ namespace CookBook.UI
 
         private void FillFormForEdit(Ingredient clickedIngredient)
         {
+            _ingredientToEditId = clickedIngredient.Id;
 
             NameTxt.Text = clickedIngredient.Name;
             TypeTxt.Text = clickedIngredient.Type;
