@@ -13,8 +13,13 @@ using System.Xml.Linq;
 
 namespace DataAccessLayer.Repositories
 {
+
     public class IngredientsRepository : IIngredientsRepository
     {
+
+        public event Action<string> OnError;
+
+
         public async Task AddIngredient(Ingredient ingredient)
         {
 
@@ -46,49 +51,84 @@ namespace DataAccessLayer.Repositories
 
                 }
 
+                ErrorOccured(errorMessage);
+
             }
             catch (Exception ex) 
             {
 
                 
 
-                string errorMessase = "An error happend while adding ingredient";
-                //TODO :  Show error message to user 
+                string errorMessage = "An error happend while adding ingredient";
 
-               // Logger.LogError(ex.Message, DateTime.Now);
+                ErrorOccured(errorMessage);
+                // Logger.LogError(ex.Message, DateTime.Now);
             }
-       
+
         }
 
-        public async Task<List<Ingredient>> GetIngredients(string? name="")
+
+        private void ErrorOccured(string errorMessage)
         {
-            string query = "select * from Ingredients";
-            if(!string.IsNullOrEmpty(name))
-                query+= $" where Name like '{name}%'";
+            if(OnError != null)
+                OnError.Invoke(errorMessage);
+        }
+        public async Task<List<Ingredient>> GetIngredients(string? name = "")
+        {
 
-            //string delay = " WAITFOR DELAY '00:00:02'";
-            //query += delay;
+            try {
+                string query = "select * from Ingredients";
+                if (!string.IsNullOrEmpty(name))
+                    query += $" where Name like '{name}%'";
 
-            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                //string delay = " WAITFOR DELAY '00:00:02'";
+                //query += delay;
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    return (await connection.QueryAsync<Ingredient>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
             {
-                return (await connection.QueryAsync<Ingredient>(query)).ToList();
+
+
+
+                string errorMessage = "An error happend while getting ingredients.";
+
+                ErrorOccured(errorMessage);
+                return new List<Ingredient>();
             }
         }
 
 
         public async Task DeleteIngredient(Ingredient ingredient)
         {
-            string query = @$"delete from Ingredients where Id={ingredient.Id}";
+            try {
+                string query = @$"delete from Ingredients where Id={ingredient.Id}";
 
-            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    await connection.ExecuteAsync(query, ingredient);
+                }
+            }catch(Exception ex)
             {
-                await connection.ExecuteAsync(query, ingredient);
+
+
+
+                string errorMessage = "An error happend while deleting ingredient";
+
+                ErrorOccured(errorMessage);
             }
+
+
         }
 
         public async Task EditIngredient(Ingredient ingredient)
         {
-            string query = @"update Ingredients
+
+            try {
+                string query = @"update Ingredients
                              set
                              Name = @Name,
                              Weight = @Weight,
@@ -96,15 +136,26 @@ namespace DataAccessLayer.Repositories
                              PricePer100g = @PricePer100g,
                              Type = @Type
                              where Id = @Id";
-                                                                             
-                              
-                              
-                              
 
-            using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
-            {
-                await connection.ExecuteAsync(query, ingredient);
+
+
+
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    await connection.ExecuteAsync(query, ingredient);
+                }
             }
+            catch (Exception ex)
+            {
+
+
+
+                string errorMessage = "An error happend while editing ingredient";
+
+                ErrorOccured(errorMessage);
+            }
+
         }
 
 
