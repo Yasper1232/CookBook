@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories
 
             try
             {
-                string query = @"insert into RecipeTypes 
+                string query = @"insert into RecipeTypes
                 (Name) values (@Name)";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))

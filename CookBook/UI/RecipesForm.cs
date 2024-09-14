@@ -53,8 +53,19 @@ namespace CookBook.UI
         private void AddRecipeTypeBtn_Click(object sender, EventArgs e)
         {
             RecipeTypesForm form = _serviceProvider.GetRequiredService<RecipeTypesForm>();
+                
+            //form.FormClosed += OnRecipeTypeFormClosed;
+
+
+            form.FormClosed += (sender, e) => RefreshRecipeTypes();
+
             form.ShowDialog();
 
         }
+
+        //private void OnRecipeTypeFormClosed(object? sender, FormClosedEventArgs e)
+        //{
+        //    RefreshRecipeTypes();
+        //}
     }
 }
