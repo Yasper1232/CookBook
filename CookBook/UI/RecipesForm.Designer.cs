@@ -122,6 +122,7 @@
             AddRecipeBtn.TabIndex = 8;
             AddRecipeBtn.Text = "Add Recipe";
             AddRecipeBtn.UseVisualStyleBackColor = true;
+            AddRecipeBtn.Click += AddRecipeBtn_Click;
             // 
             // RecipePictureBox
             // 

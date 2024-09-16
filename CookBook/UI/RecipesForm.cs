@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Contracts;
+using DomainModel.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,21 +18,23 @@ namespace CookBook.UI
     {
 
         private readonly IRecipeTypesRepository _recipeTypesRepository;
+        private readonly IRecipeRepository _recipeRepository;
         private readonly IServiceProvider _serviceProvider;
         public RecipesForm(IRecipeTypesRepository recipeTypesRepository, IServiceProvider
-            serviceProvider)
+            serviceProvider,IRecipeRepository recipeRepository)
         {
             InitializeComponent();
 
             _recipeTypesRepository = recipeTypesRepository;
             _serviceProvider = serviceProvider;
+            _recipeRepository = recipeRepository;
 
         }
 
 
         internal async void RefreshRecipeTypes()
         {
-            
+
             RecipeTypesCbx.DataSource = await _recipeTypesRepository.GetRecipeTypes();
 
             RecipeTypesCbx.DisplayMember = "Name";
@@ -53,7 +57,7 @@ namespace CookBook.UI
         private void AddRecipeTypeBtn_Click(object sender, EventArgs e)
         {
             RecipeTypesForm form = _serviceProvider.GetRequiredService<RecipeTypesForm>();
-                
+
             //form.FormClosed += OnRecipeTypeFormClosed;
 
 
@@ -63,9 +67,57 @@ namespace CookBook.UI
 
         }
 
-        //private void OnRecipeTypeFormClosed(object? sender, FormClosedEventArgs e)
-        //{
-        //    RefreshRecipeTypes();
-        //}
+        private async void AddRecipeBtn_Click(object sender, EventArgs e)
+        {
+            string message = "";
+
+            if (NameTxt.Text == string.Empty)
+            {
+                message = "Please enter name to recipe";
+                MessageBox.Show(message);
+
+            }
+            else if (DescriptionTxt.Text == string.Empty)
+            {
+
+                message = "Please enter description to recipe ";
+                MessageBox.Show(message);
+
+            }
+            else
+            {
+
+
+
+                byte[] image = null;
+                int recipeTypeId = ((RecipeType)RecipeTypesCbx.SelectedItem).Id;
+                Recipe newRecipe = new Recipe(NameTxt.Text, DescriptionTxt.Text, image, recipeTypeId);
+
+                await _recipeRepository.AddRecipe(newRecipe);
+
+
+                RefreshRecipe();
+            }
+                }
+
+        private void RefreshRecipe()
+        {
+            NameTxt.Text = string.Empty; 
+            DescriptionTxt.Text = string.Empty;
+            RecipePictureBox.Image = null;
+
+        }
+
+        private void ValidateRecipeForm()
+        {
+
+            if (NameTxt.Text == string.Empty || DescriptionTxt.Text==string.Empty ) {
+            
+                    
+            
+            }
+
+        }
+        
     }
 }

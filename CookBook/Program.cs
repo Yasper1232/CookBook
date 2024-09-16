@@ -33,10 +33,14 @@ namespace CookBook
 
             services.AddTransient<IRecipeTypesRepository>(_ => new RecipeTypesRepository());
 
+            services.AddTransient<IRecipeRepository>(_ => new RecipesRepository());
+
+
 
             services.AddTransient<IngredientsForm>();
             services.AddTransient<RecipesForm>();
             services.AddTransient<RecipeTypesForm>();
+
 
 
             return services;
