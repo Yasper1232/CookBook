@@ -13,6 +13,9 @@ namespace DataAccessLayer.Repositories
 {
     public class RecipesRepository : IRecipeRepository
     {
+
+
+
         public event Action<string> OnError;
 
         private void ErrorOccured(string errorMessage)
@@ -33,13 +36,31 @@ namespace DataAccessLayer.Repositories
                 {
                     await connection.ExecuteAsync(query, recipe);
                 }
+
+
             }
-          
+            catch (SqlException ex)
+            {
+                string errorMessage = "";
+                if (ex.Number == 2627)
+                {
+
+                    errorMessage = "That recipe already exists!";
+
+                }
+                else
+                {
+                    errorMessage = "Error happend in database:(";
+                }
+
+                ErrorOccured(errorMessage);
+            }
+
             catch (Exception ex)
             {
 
 
-
+                //2627
                 string errorMessage = "An error happend while adding recipe";
 
                 ErrorOccured(errorMessage);
@@ -47,9 +68,34 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public Task<List<Recipe>> GetRecipes()
+        public async Task<List<Recipe>> GetRecipes()
         {
-            throw new NotImplementedException();
+
+            try
+            {
+
+                string query = "select Name,Description from Recipes";
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+
+                    return (await connection.QueryAsync<Recipe>(query)).ToList();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                {
+
+
+                    string errorMessage = "An error happend while getting recipes.";
+
+                    ErrorOccured(errorMessage);
+                    return new List<Recipe>();
+                }
+
+            }
         }
     }
 }

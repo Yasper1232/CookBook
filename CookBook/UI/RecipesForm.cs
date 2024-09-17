@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Contracts;
+using DataAccessLayer.Repositories;
 using DomainModel.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,17 +22,23 @@ namespace CookBook.UI
         private readonly IRecipeRepository _recipeRepository;
         private readonly IServiceProvider _serviceProvider;
         public RecipesForm(IRecipeTypesRepository recipeTypesRepository, IServiceProvider
-            serviceProvider,IRecipeRepository recipeRepository)
+            serviceProvider, IRecipeRepository recipeRepository)
         {
             InitializeComponent();
 
             _recipeTypesRepository = recipeTypesRepository;
             _serviceProvider = serviceProvider;
             _recipeRepository = recipeRepository;
+            _recipeRepository.OnError += OnErrorOccured;
 
         }
 
+        private void OnErrorOccured(string errorMessage)
+        {
 
+            MessageBox.Show(errorMessage);
+
+        }
         internal async void RefreshRecipeTypes()
         {
 
@@ -51,7 +58,16 @@ namespace CookBook.UI
         private void RecipesForm_Load(object sender, EventArgs e)
         {
 
+
+            RefreshGridData();
             RefreshRecipeTypes();
+
+        }
+
+        private async void RefreshGridData()
+        {
+
+                RecipesGrid.DataSource = await _recipeRepository.GetRecipes();
         }
 
         private void AddRecipeTypeBtn_Click(object sender, EventArgs e)
@@ -97,27 +113,21 @@ namespace CookBook.UI
 
 
                 RefreshRecipe();
+                RefreshGridData();
             }
-                }
+        }
 
         private void RefreshRecipe()
         {
-            NameTxt.Text = string.Empty; 
+            NameTxt.Text = string.Empty;
             DescriptionTxt.Text = string.Empty;
             RecipePictureBox.Image = null;
 
         }
 
-        private void ValidateRecipeForm()
+        private void RecipesGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            if (NameTxt.Text == string.Empty || DescriptionTxt.Text==string.Empty ) {
-            
-                    
-            
-            }
-
         }
-        
     }
 }

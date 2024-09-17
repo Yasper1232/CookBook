@@ -82,12 +82,15 @@
             // 
             // RecipesGrid
             // 
+            RecipesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            RecipesGrid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             RecipesGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             RecipesGrid.Location = new Point(10, 115);
             RecipesGrid.Name = "RecipesGrid";
             RecipesGrid.RowHeadersWidth = 51;
             RecipesGrid.Size = new Size(886, 509);
             RecipesGrid.TabIndex = 4;
+            RecipesGrid.CellContentClick += RecipesGrid_CellContentClick;
             // 
             // NameTxt
             // 
