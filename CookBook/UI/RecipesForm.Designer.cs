@@ -107,6 +107,7 @@
             ClearAllFieldsBtn.TabIndex = 6;
             ClearAllFieldsBtn.Text = "Clear All Fields";
             ClearAllFieldsBtn.UseVisualStyleBackColor = true;
+            ClearAllFieldsBtn.Click += ClearAllFieldsBtn_Click;
             // 
             // RecipeIngredientsBtn
             // 
@@ -134,6 +135,7 @@
             RecipePictureBox.Size = new Size(351, 163);
             RecipePictureBox.TabIndex = 9;
             RecipePictureBox.TabStop = false;
+            RecipePictureBox.Click += RecipePictureBox_Click;
             // 
             // label1
             // 

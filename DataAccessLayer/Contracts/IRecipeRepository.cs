@@ -1,4 +1,5 @@
-﻿using DomainModel.Models;
+﻿using DataAccessLayer.CustomQueryResults;
+using DomainModel.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,8 @@ namespace DataAccessLayer.Contracts
 
         public Task AddRecipe(Recipe recipe);
 
-        public Task<List<Recipe>> GetRecipes();
+        public Task<List<RecipeWithType>> GetRecipes();
+
+        public Task DeleteRecipe(Recipe recipe);
     }
 }

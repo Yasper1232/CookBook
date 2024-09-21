@@ -8,13 +8,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using DataAccessLayer.CustomQueryResults;
 
 namespace DataAccessLayer.Repositories
 {
     public class RecipesRepository : IRecipeRepository
     {
 
+        public async Task DeleteRecipe(Recipe recipe)
+        {
+            try
+            {
+                string query = @$"delete from Recipes where id={recipe.Id}";
 
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    await connection.ExecuteAsync(query, recipe);
+                }
+
+            }
+            catch (Exception ex) {
+
+                string errormessage = "An error happend when deleting an REcipe";
+
+                ErrorOccured(errormessage);
+
+            }
+
+
+        }
 
         public event Action<string> OnError;
 
@@ -68,18 +90,21 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<List<Recipe>> GetRecipes()
+        public async Task<List<RecipeWithType>> GetRecipes()
         {
 
             try
             {
 
-                string query = "select Name,Description from Recipes";
+                string query = @"select r.Id,r.Name,r.Description,rt.Name as 'Type'
+                                 from
+                                 Recipes as r join RecipeTypes as rt
+                                 on r.RecipeTypeId = rt.Id";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
                 {
 
-                    return (await connection.QueryAsync<Recipe>(query)).ToList();
+                    return (await connection.QueryAsync<RecipeWithType>(query)).ToList();
 
                 }
 
@@ -92,7 +117,7 @@ namespace DataAccessLayer.Repositories
                     string errorMessage = "An error happend while getting recipes.";
 
                     ErrorOccured(errorMessage);
-                    return new List<Recipe>();
+                    return new List<RecipeWithType>();
                 }
 
             }

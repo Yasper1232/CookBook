@@ -1,4 +1,6 @@
-﻿using DataAccessLayer.Contracts;
+﻿using CookBook.Helpers;
+using DataAccessLayer.Contracts;
+using CookBook.Helpers;
 using DataAccessLayer.Repositories;
 using DomainModel.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
+using System.Globalization;
 
 namespace CookBook.UI
 {
@@ -21,6 +25,18 @@ namespace CookBook.UI
         private readonly IRecipeTypesRepository _recipeTypesRepository;
         private readonly IRecipeRepository _recipeRepository;
         private readonly IServiceProvider _serviceProvider;
+
+        private Image _placeholderImage
+        {
+            get
+            {
+                var executingAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var imagePath = Path.Combine(executingAssemblyLocation, "Assets\\Images\\recipe_placeholder_image.png");
+                return Image.FromFile(imagePath);
+            }
+        }
+        private bool _isUserImageAdded = false;
+
         public RecipesForm(IRecipeTypesRepository recipeTypesRepository, IServiceProvider
             serviceProvider, IRecipeRepository recipeRepository)
         {
@@ -29,16 +45,16 @@ namespace CookBook.UI
             _recipeTypesRepository = recipeTypesRepository;
             _serviceProvider = serviceProvider;
             _recipeRepository = recipeRepository;
-            _recipeRepository.OnError += OnErrorOccured;
+            _recipeRepository.OnError += (message) => MessageBox.Show(message);
 
         }
 
-        private void OnErrorOccured(string errorMessage)
-        {
+        //private void OnErrorOccured(string errorMessage)
+        //{
 
-            MessageBox.Show(errorMessage);
+        //    MessageBox.Show(errorMessage);
 
-        }
+        //}
         internal async void RefreshRecipeTypes()
         {
 
@@ -47,27 +63,21 @@ namespace CookBook.UI
             RecipeTypesCbx.DisplayMember = "Name";
         }
 
-
-
-
-
-
-
-
-
         private void RecipesForm_Load(object sender, EventArgs e)
         {
 
-
-            RefreshGridData();
+            CustomizeGridAppearance();
+            RefreshRecipesGrid();
             RefreshRecipeTypes();
-
+            RecipePictureBox.Image = _placeholderImage;
+            RecipePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
-        private async void RefreshGridData()
+        private async void RefreshRecipesGrid()
         {
 
-                RecipesGrid.DataSource = await _recipeRepository.GetRecipes();
+            RecipesGrid.DataSource = await _recipeRepository.GetRecipes();
+
         }
 
         private void AddRecipeTypeBtn_Click(object sender, EventArgs e)
@@ -85,43 +95,33 @@ namespace CookBook.UI
 
         private async void AddRecipeBtn_Click(object sender, EventArgs e)
         {
-            string message = "";
+            if (!IsValid())
+                return;
 
-            if (NameTxt.Text == string.Empty)
+            byte[] image = null;
+            if (_isUserImageAdded)
             {
-                message = "Please enter name to recipe";
-                MessageBox.Show(message);
-
+                image = ImageHelper.ConvertToDbImage(RecipePictureBox.ImageLocation);
             }
-            else if (DescriptionTxt.Text == string.Empty)
-            {
+            int recipeTypeId = ((RecipeType)RecipeTypesCbx.SelectedItem).Id;
+            Recipe newRecipe = new Recipe(NameTxt.Text, DescriptionTxt.Text, image, recipeTypeId);
 
-                message = "Please enter description to recipe ";
-                MessageBox.Show(message);
-
-            }
-            else
-            {
+            await _recipeRepository.AddRecipe(newRecipe);
 
 
+            ClearAllFields();
+            RefreshRecipesGrid();
 
-                byte[] image = null;
-                int recipeTypeId = ((RecipeType)RecipeTypesCbx.SelectedItem).Id;
-                Recipe newRecipe = new Recipe(NameTxt.Text, DescriptionTxt.Text, image, recipeTypeId);
-
-                await _recipeRepository.AddRecipe(newRecipe);
-
-
-                RefreshRecipe();
-                RefreshGridData();
-            }
         }
 
-        private void RefreshRecipe()
+        private void ClearAllFields()
         {
             NameTxt.Text = string.Empty;
             DescriptionTxt.Text = string.Empty;
-            RecipePictureBox.Image = null;
+            RecipePictureBox.ImageLocation = string.Empty;
+            RecipePictureBox.Image = _placeholderImage;
+            _isUserImageAdded = false;
+
 
         }
 
@@ -129,5 +129,123 @@ namespace CookBook.UI
         {
 
         }
+
+        private bool IsValid()
+        {
+
+            bool IsValid = true;
+            string message = "";
+
+            if (string.IsNullOrEmpty(NameTxt.Text))
+            {
+                IsValid = false;
+                message += "Please enter name.\n\n";
+
+            }
+
+
+            if (string.IsNullOrEmpty(DescriptionTxt.Text))
+            {
+                IsValid = false;
+                message += "Please enter description.\n\n";
+
+            }
+
+
+            if (!IsValid)
+                MessageBox.Show(message, "Form not valid!");
+
+
+            return IsValid;
+
+        }
+
+        private void RecipePictureBox_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Title = "Please select an image",
+                Filter = "PNG|*.png|JPG|*jpg|JPEG|*jpeg",
+                Multiselect = false
+            })
+            {
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    RecipePictureBox.ImageLocation = openFileDialog.FileName;
+                    _isUserImageAdded = true;
+
+                }
+
+
+            }
+        }
+
+        private void ClearAllFieldsBtn_Click(object sender, EventArgs e)
+        {
+            ClearAllFields();
+
+        }
+
+        private void FillFormForEdit(Recipe clickedRecipe)
+        {
+            //_RecipeToEditId = clickedRecipe.Id;
+
+            NameTxt.Text = clickedRecipe.Name;
+            
+
+
+           
+        }
+        private async void RecipesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+            {
+            if(e.RowIndex>=0 && RecipesGrid.CurrentCell is DataGridViewButtonCell)
+            {
+                Recipe clickedRecipe = (Recipe)RecipesGrid.Rows[e.RowIndex].DataBoundItem;
+
+                if (RecipesGrid.CurrentCell.OwningColumn.Name == "DeleteBtn")
+                {
+                    await _recipeRepository.DeleteRecipe(clickedRecipe);
+                    RefreshRecipesGrid();
+                }else if(RecipesGrid.CurrentCell.OwningColumn.Name == "EditBtn")
+                {
+                    FillFormForEdit(clickedRecipe);
+                }
+            }
+            }
+
+        private void CustomizeGridAppearance()
+        {
+            RecipesGrid.AutoGenerateColumns = false;
+
+            DataGridViewColumn[] columns = new DataGridViewColumn[6];
+            columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id", Visible = false };
+            columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name", HeaderText = "Name" };
+            columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Type", HeaderText = "Type" };
+            columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Description", HeaderText = "Description" };
+            columns[4] = new DataGridViewButtonColumn()
+            {
+
+                Text = "Edit",
+                Name = "EditBtn",
+                HeaderText = "",
+                UseColumnTextForButtonValue = true
+
+
+
+            };
+            columns[5] = new DataGridViewButtonColumn()
+            {
+                Text = "Delete",
+                Name = "DeleteBtn",
+                HeaderText = "",
+                UseColumnTextForButtonValue = true
+
+            };
+            RecipesGrid.Columns.Clear();
+            RecipesGrid.Columns.AddRange(columns);
+
+        }
     }
+
+    
 }
