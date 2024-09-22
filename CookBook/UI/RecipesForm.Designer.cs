@@ -42,6 +42,7 @@
             label2 = new Label();
             label3 = new Label();
             label4 = new Label();
+            EditRecipeButton = new Button();
             ((System.ComponentModel.ISupportInitialize)RecipesGrid).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RecipePictureBox).BeginInit();
             SuspendLayout();
@@ -90,6 +91,7 @@
             RecipesGrid.RowHeadersWidth = 51;
             RecipesGrid.Size = new Size(886, 509);
             RecipesGrid.TabIndex = 4;
+            RecipesGrid.CellClick += RecipesGrid_CellClick;
             RecipesGrid.CellContentClick += RecipesGrid_CellContentClick;
             // 
             // NameTxt
@@ -173,11 +175,22 @@
             label4.TabIndex = 13;
             label4.Text = "Image:";
             // 
+            // EditRecipeButton
+            // 
+            EditRecipeButton.Location = new Point(992, 500);
+            EditRecipeButton.Name = "EditRecipeButton";
+            EditRecipeButton.Size = new Size(423, 36);
+            EditRecipeButton.TabIndex = 14;
+            EditRecipeButton.Text = "Edit";
+            EditRecipeButton.UseVisualStyleBackColor = true;
+            EditRecipeButton.Click += EditRecipeButton_Click;
+            // 
             // RecipesForm
             // 
             AutoScaleDimensions = new SizeF(13F, 31F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1451, 719);
+            Controls.Add(EditRecipeButton);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -219,5 +232,6 @@
         private Label label2;
         private Label label3;
         private Label label4;
+        private Button EditRecipeButton;
     }
 }

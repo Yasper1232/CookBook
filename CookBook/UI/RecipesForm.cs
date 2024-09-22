@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Globalization;
+using DataAccessLayer.CustomQueryResults;
 
 namespace CookBook.UI
 {
@@ -26,6 +27,7 @@ namespace CookBook.UI
         private readonly IRecipeRepository _recipeRepository;
         private readonly IServiceProvider _serviceProvider;
 
+        int _recipeToEditId;
         private Image _placeholderImage
         {
             get
@@ -71,6 +73,7 @@ namespace CookBook.UI
             RefreshRecipeTypes();
             RecipePictureBox.Image = _placeholderImage;
             RecipePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            EditRecipeButton.Visible = false;
         }
 
         private async void RefreshRecipesGrid()
@@ -186,41 +189,18 @@ namespace CookBook.UI
 
         }
 
-        private void FillFormForEdit(Recipe clickedRecipe)
-        {
-            //_RecipeToEditId = clickedRecipe.Id;
-
-            NameTxt.Text = clickedRecipe.Name;
-            
 
 
-           
-        }
-        private async void RecipesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
-            {
-            if(e.RowIndex>=0 && RecipesGrid.CurrentCell is DataGridViewButtonCell)
-            {
-                Recipe clickedRecipe = (Recipe)RecipesGrid.Rows[e.RowIndex].DataBoundItem;
-
-                if (RecipesGrid.CurrentCell.OwningColumn.Name == "DeleteBtn")
-                {
-                    await _recipeRepository.DeleteRecipe(clickedRecipe);
-                    RefreshRecipesGrid();
-                }else if(RecipesGrid.CurrentCell.OwningColumn.Name == "EditBtn")
-                {
-                    FillFormForEdit(clickedRecipe);
-                }
-            }
-            }
 
         private void CustomizeGridAppearance()
         {
+            RecipesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             RecipesGrid.AutoGenerateColumns = false;
 
             DataGridViewColumn[] columns = new DataGridViewColumn[6];
             columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id", Visible = false };
             columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name", HeaderText = "Name" };
-            columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Type", HeaderText = "Type" };
+            columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Description", HeaderText = "Description" };
             columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Description", HeaderText = "Description" };
             columns[4] = new DataGridViewButtonColumn()
             {
@@ -241,11 +221,87 @@ namespace CookBook.UI
                 UseColumnTextForButtonValue = true
 
             };
+
+            RecipesGrid.RowHeadersVisible = false;
             RecipesGrid.Columns.Clear();
             RecipesGrid.Columns.AddRange(columns);
 
         }
+
+        private async void RecipesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && RecipesGrid.CurrentCell is DataGridViewButtonCell)
+            {
+                RecipeWithType clickedRecipe = (RecipeWithType)RecipesGrid.Rows[e.RowIndex].DataBoundItem;
+
+                if (RecipesGrid.CurrentCell.OwningColumn.Name == "DeleteBtn")
+                {
+                    await _recipeRepository.DeleteRecipe(clickedRecipe.Id);
+                    RefreshRecipesGrid();
+                }
+                else if (RecipesGrid.CurrentCell.OwningColumn.Name == "EditBtn")
+                {
+                    FillFormForEdit(clickedRecipe);
+                    EditRecipeButton.Visible = true;
+                    _recipeToEditId = clickedRecipe.Id;
+                }
+            }
+        }
+
+        private void FillFormForEdit(RecipeWithType clickedRecipe)
+        {
+            //_RecipeToEditId = clickedRecipe.Id;
+
+            NameTxt.Text = clickedRecipe.Name;
+            DescriptionTxt.Text = clickedRecipe.Description;
+            if (clickedRecipe.Image != null)
+                RecipePictureBox.Image = ImageHelper.ConvertFromDbImage(clickedRecipe.Image);
+            else
+                RecipePictureBox.Image = _placeholderImage;
+
+            RecipeTypesCbx.SelectedIndex = FindRecipeTypeIndex(clickedRecipe.RecipeTypeId);
+
+
+
+        }
+
+        private int FindRecipeTypeIndex(int recipeTypeId)
+        {
+
+            List<RecipeType> allRecipeTypes = (List<RecipeType>)RecipeTypesCbx.DataSource;
+
+
+            RecipeType matchingRecipeType = allRecipeTypes.FirstOrDefault(rt => rt.Id == recipeTypeId);
+
+
+            int index = RecipeTypesCbx.Items.IndexOf(matchingRecipeType);
+            return index;
+
+        }
+
+        private async void EditRecipeButton_Click(object sender, EventArgs e)
+        {
+
+
+            if (!IsValid())
+                return;
+
+            byte[] image = null;
+            if (_isUserImageAdded)
+            {
+                image = ImageHelper.ConvertToDbImage(RecipePictureBox.ImageLocation);
+            }
+            int recipeTypeId = ((RecipeType)RecipeTypesCbx.SelectedItem).Id;
+            Recipe recipe = new Recipe(NameTxt.Text, DescriptionTxt.Text, image, recipeTypeId, _recipeToEditId);
+
+            await _recipeRepository.EditRecipe(recipe);
+
+
+            ClearAllFields();
+            RefreshRecipesGrid();
+            EditRecipeButton.Visible = false;
+        }
     }
 
-    
+
 }

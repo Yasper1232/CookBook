@@ -9,32 +9,67 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using DataAccessLayer.CustomQueryResults;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccessLayer.Repositories
 {
     public class RecipesRepository : IRecipeRepository
     {
 
-        public async Task DeleteRecipe(Recipe recipe)
+        public async Task DeleteRecipe(int Id)
         {
             try
             {
-                string query = @$"delete from Recipes where id={recipe.Id}";
+                string query = @$"delete from Recipes where id={Id}";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
                 {
-                    await connection.ExecuteAsync(query, recipe);
+                    await connection.ExecuteAsync(query);
                 }
 
             }
             catch (Exception ex) {
 
-                string errormessage = "An error happend when deleting an REcipe";
+                string errormessage = "An error happend when deleting Recipe";
 
                 ErrorOccured(errormessage);
 
             }
 
+
+        }
+
+        public async Task EditRecipe(Recipe recipe)
+        {
+
+            try
+            {
+                string query = @"update Recipes
+                             set
+                             Name = @Name,
+                             Description = @Description,
+                             RecipeTypeId = @RecipeTypeId"
+                          + (recipe.Image!=null? ",Image = @Image":"")   
+                             +" where Id = @Id";
+
+
+
+
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    await connection.ExecuteAsync(query, recipe);
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+
+                string errorMessage = "An error happend while editing recipe";
+
+                ErrorOccured(errorMessage);
+            }
 
         }
 
@@ -96,7 +131,7 @@ namespace DataAccessLayer.Repositories
             try
             {
 
-                string query = @"select r.Id,r.Name,r.Description,rt.Name as 'Type'
+                string query = @"select r.Id,r.Name,r.Description,rt.Name as 'Type',r.RecipeTypeId,r.Image
                                  from
                                  Recipes as r join RecipeTypes as rt
                                  on r.RecipeTypeId = rt.Id";
