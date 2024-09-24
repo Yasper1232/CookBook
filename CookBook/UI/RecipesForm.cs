@@ -59,10 +59,17 @@ namespace CookBook.UI
         //}
         internal async void RefreshRecipeTypes()
         {
+            List<RecipeType> recipeTypes = await _recipeTypesRepository.GetRecipeTypes();
 
-            RecipeTypesCbx.DataSource = await _recipeTypesRepository.GetRecipeTypes();
-
+            RecipeTypesCbx.DataSource = recipeTypes;
             RecipeTypesCbx.DisplayMember = "Name";
+            
+            List<RecipeType> filterList = new List<RecipeType>();
+            filterList.Add(new RecipeType("All recipe types",0));
+            filterList.AddRange(recipeTypes);
+
+            RecipesFilterCbx.DataSource = filterList;
+            RecipesFilterCbx.DisplayMember = "Name";
         }
 
         private void RecipesForm_Load(object sender, EventArgs e)
@@ -300,6 +307,11 @@ namespace CookBook.UI
             ClearAllFields();
             RefreshRecipesGrid();
             EditRecipeButton.Visible = false;
+        }
+
+        private void RecipesFilterCbx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

@@ -54,6 +54,7 @@
             RecipesFilterCbx.Name = "RecipesFilterCbx";
             RecipesFilterCbx.Size = new Size(886, 39);
             RecipesFilterCbx.TabIndex = 0;
+            RecipesFilterCbx.SelectedIndexChanged += RecipesFilterCbx_SelectedIndexChanged;
             // 
             // RecipeTypesCbx
             // 
