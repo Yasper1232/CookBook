@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Globalization;
 using DataAccessLayer.CustomQueryResults;
+using System.Diagnostics;
 
 namespace CookBook.UI
 {
@@ -39,6 +40,11 @@ namespace CookBook.UI
         }
         private bool _isUserImageAdded = false;
 
+
+        private List<RecipeWithType> _recipesCache;
+
+
+
         public RecipesForm(IRecipeTypesRepository recipeTypesRepository, IServiceProvider
             serviceProvider, IRecipeRepository recipeRepository)
         {
@@ -57,9 +63,11 @@ namespace CookBook.UI
         //    MessageBox.Show(errorMessage);
 
         //}
-        internal async void RefreshRecipeTypes()
+        internal async Task RefreshRecipeTypes()
         {
             List<RecipeType> recipeTypes = await _recipeTypesRepository.GetRecipeTypes();
+
+
 
             RecipeTypesCbx.DataSource = recipeTypes;
             RecipeTypesCbx.DisplayMember = "Name";
@@ -72,21 +80,45 @@ namespace CookBook.UI
             RecipesFilterCbx.DisplayMember = "Name";
         }
 
-        private void RecipesForm_Load(object sender, EventArgs e)
+        private async void RecipesForm_Load(object sender, EventArgs e)
         {
 
             CustomizeGridAppearance();
-            RefreshRecipesGrid();
-            RefreshRecipeTypes();
+            await RefreshRecipeTypes();
+
+            RefreshRecipesCache();
             RecipePictureBox.Image = _placeholderImage;
             RecipePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             EditRecipeButton.Visible = false;
         }
 
-        private async void RefreshRecipesGrid()
+        private async void RefreshRecipesCache() { 
+
+
+            _recipesCache = await _recipeRepository.GetRecipes();
+
+
+            FilterGridData();
+
+        }
+
+        private void FilterGridData()
         {
 
-            RecipesGrid.DataSource = await _recipeRepository.GetRecipes();
+            RecipeType selectedType = (RecipeType)RecipesFilterCbx.SelectedItem;
+
+            if (selectedType.Id == 0) { 
+            
+                RecipesGrid.DataSource = _recipesCache;
+
+            }
+            else
+            {
+                RecipesGrid.DataSource = _recipesCache.Where(r=> r.RecipeTypeId == selectedType.Id).ToList();
+            }
+
+
+
 
         }
 
@@ -120,7 +152,7 @@ namespace CookBook.UI
 
 
             ClearAllFields();
-            RefreshRecipesGrid();
+            RefreshRecipesCache();
 
         }
 
@@ -244,7 +276,7 @@ namespace CookBook.UI
                 if (RecipesGrid.CurrentCell.OwningColumn.Name == "DeleteBtn")
                 {
                     await _recipeRepository.DeleteRecipe(clickedRecipe.Id);
-                    RefreshRecipesGrid();
+                    RefreshRecipesCache();
                 }
                 else if (RecipesGrid.CurrentCell.OwningColumn.Name == "EditBtn")
                 {
@@ -305,13 +337,13 @@ namespace CookBook.UI
 
 
             ClearAllFields();
-            RefreshRecipesGrid();
+            RefreshRecipesCache();
             EditRecipeButton.Visible = false;
         }
 
         private void RecipesFilterCbx_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            FilterGridData();
         }
     }
 
