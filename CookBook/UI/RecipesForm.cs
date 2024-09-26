@@ -65,6 +65,11 @@ namespace CookBook.UI
         //}
         internal async Task RefreshRecipeTypes()
         {
+
+            RecipeType previouslySelectedFilter =  (RecipeType)RecipesFilterCbx.SelectedItem;
+            RecipeType previouslySelectedRecipeType = (RecipeType)RecipeTypesCbx.SelectedItem;
+
+
             List<RecipeType> recipeTypes = await _recipeTypesRepository.GetRecipeTypes();
 
 
@@ -78,6 +83,21 @@ namespace CookBook.UI
 
             RecipesFilterCbx.DataSource = filterList;
             RecipesFilterCbx.DisplayMember = "Name";
+
+            if (previouslySelectedFilter != null && previouslySelectedFilter.Id != 0) {
+
+                int indexToSelect = FindRecipeTypeIndex(previouslySelectedFilter.Id);
+                RecipesFilterCbx.SelectedIndex = indexToSelect+1;
+            
+            }
+
+            if (previouslySelectedRecipeType != null && previouslySelectedRecipeType.Id != 0)
+            {
+
+                int indexToSelect = FindRecipeTypeIndex(previouslySelectedRecipeType.Id);
+                RecipeTypesCbx.SelectedIndex = indexToSelect;
+
+            }
         }
 
         private async void RecipesForm_Load(object sender, EventArgs e)
@@ -129,7 +149,7 @@ namespace CookBook.UI
             //form.FormClosed += OnRecipeTypeFormClosed;
 
 
-            form.FormClosed += (sender, e) => RefreshRecipeTypes();
+            form.FormClosed += (sender, e) => RefreshRecipeTypes(); 
 
             form.ShowDialog();
 
@@ -225,6 +245,8 @@ namespace CookBook.UI
         private void ClearAllFieldsBtn_Click(object sender, EventArgs e)
         {
             ClearAllFields();
+
+            EditRecipeButton.Visible = false;
 
         }
 
