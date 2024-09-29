@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace DomainModel.Models
 {
-    internal class RecipeIngredient
+    public class RecipeIngredient
     {
+
+        public int Id { get; set; }
+        public int IngredientId { get; set; }
+        public int RecipeId { get; set; }
+        public  decimal Amount { get; set; }
+        
+
     }
 }

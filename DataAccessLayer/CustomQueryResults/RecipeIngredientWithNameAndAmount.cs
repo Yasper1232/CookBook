@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.CustomQueryResults
 {
-    internal class RecipeIngredientWithNameAndAmount
+    public class RecipeIngredientWithNameAndAmount
     {
+
+        public int IngredientId { get; set; }
+        public string Name { get; set; }
+        public decimal Amount { get; set; }
+
     }
 }

@@ -261,11 +261,11 @@ namespace CookBook.UI
             RecipesGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             RecipesGrid.AutoGenerateColumns = false;
 
-            DataGridViewColumn[] columns = new DataGridViewColumn[6];
+            DataGridViewColumn[] columns = new DataGridViewColumn[7];
             columns[0] = new DataGridViewTextBoxColumn() { DataPropertyName = "Id", Visible = false };
             columns[1] = new DataGridViewTextBoxColumn() { DataPropertyName = "Name", HeaderText = "Name" };
             columns[2] = new DataGridViewTextBoxColumn() { DataPropertyName = "Description", HeaderText = "Description" };
-            columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Description", HeaderText = "Description" };
+            columns[3] = new DataGridViewTextBoxColumn() { DataPropertyName = "Type", HeaderText = "Type" };
             columns[4] = new DataGridViewButtonColumn()
             {
 
@@ -284,6 +284,15 @@ namespace CookBook.UI
                 HeaderText = "",
                 UseColumnTextForButtonValue = true
 
+            };
+            columns[6] = new DataGridViewButtonColumn()
+            {
+
+                Text = "Ingredients",
+                Name = "IngredientsBtn",
+                HeaderText = "",
+                UseColumnTextForButtonValue = true
+                
             };
 
             RecipesGrid.RowHeadersVisible = false;
@@ -308,6 +317,14 @@ namespace CookBook.UI
                     FillFormForEdit(clickedRecipe);
                     EditRecipeButton.Visible = true;
                     _recipeToEditId = clickedRecipe.Id;
+                }
+                else if (RecipesGrid.CurrentCell.OwningColumn.Name== "IngredientsBtn") {
+
+                    RecipeIngredientsForm form = _serviceProvider.GetRequiredService<RecipeIngredientsForm>();
+                    form.RecipeId = clickedRecipe.Id;
+                    form.ShowDialog();
+
+
                 }
             }
         }

@@ -102,9 +102,10 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            Margin = new Padding(6, 6, 6, 6);
+            Margin = new Padding(6);
             Name = "RecipeIngredientsForm";
             Text = "RecipeIngredientsForm";
+            Load += RecipeIngredientsForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
