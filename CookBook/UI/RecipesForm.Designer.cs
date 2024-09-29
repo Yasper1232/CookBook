@@ -120,6 +120,7 @@
             RecipeIngredientsBtn.TabIndex = 7;
             RecipeIngredientsBtn.Text = "Recipe Ingredients";
             RecipeIngredientsBtn.UseVisualStyleBackColor = true;
+            RecipeIngredientsBtn.Click += RecipeIngredientsBtn_Click;
             // 
             // AddRecipeBtn
             // 

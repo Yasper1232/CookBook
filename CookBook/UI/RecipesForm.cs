@@ -66,7 +66,7 @@ namespace CookBook.UI
         internal async Task RefreshRecipeTypes()
         {
 
-            RecipeType previouslySelectedFilter =  (RecipeType)RecipesFilterCbx.SelectedItem;
+            RecipeType previouslySelectedFilter = (RecipeType)RecipesFilterCbx.SelectedItem;
             RecipeType previouslySelectedRecipeType = (RecipeType)RecipeTypesCbx.SelectedItem;
 
 
@@ -76,19 +76,20 @@ namespace CookBook.UI
 
             RecipeTypesCbx.DataSource = recipeTypes;
             RecipeTypesCbx.DisplayMember = "Name";
-            
+
             List<RecipeType> filterList = new List<RecipeType>();
-            filterList.Add(new RecipeType("All recipe types",0));
+            filterList.Add(new RecipeType("All recipe types", 0));
             filterList.AddRange(recipeTypes);
 
             RecipesFilterCbx.DataSource = filterList;
             RecipesFilterCbx.DisplayMember = "Name";
 
-            if (previouslySelectedFilter != null && previouslySelectedFilter.Id != 0) {
+            if (previouslySelectedFilter != null && previouslySelectedFilter.Id != 0)
+            {
 
                 int indexToSelect = FindRecipeTypeIndex(previouslySelectedFilter.Id);
-                RecipesFilterCbx.SelectedIndex = indexToSelect+1;
-            
+                RecipesFilterCbx.SelectedIndex = indexToSelect + 1;
+
             }
 
             if (previouslySelectedRecipeType != null && previouslySelectedRecipeType.Id != 0)
@@ -112,7 +113,8 @@ namespace CookBook.UI
             EditRecipeButton.Visible = false;
         }
 
-        private async void RefreshRecipesCache() { 
+        private async void RefreshRecipesCache()
+        {
 
 
             _recipesCache = await _recipeRepository.GetRecipes();
@@ -127,14 +129,15 @@ namespace CookBook.UI
 
             RecipeType selectedType = (RecipeType)RecipesFilterCbx.SelectedItem;
 
-            if (selectedType.Id == 0) { 
-            
+            if (selectedType.Id == 0)
+            {
+
                 RecipesGrid.DataSource = _recipesCache;
 
             }
             else
             {
-                RecipesGrid.DataSource = _recipesCache.Where(r=> r.RecipeTypeId == selectedType.Id).ToList();
+                RecipesGrid.DataSource = _recipesCache.Where(r => r.RecipeTypeId == selectedType.Id).ToList();
             }
 
 
@@ -149,7 +152,7 @@ namespace CookBook.UI
             //form.FormClosed += OnRecipeTypeFormClosed;
 
 
-            form.FormClosed += (sender, e) => RefreshRecipeTypes(); 
+            form.FormClosed += (sender, e) => RefreshRecipeTypes();
 
             form.ShowDialog();
 
@@ -366,6 +369,13 @@ namespace CookBook.UI
         private void RecipesFilterCbx_SelectedIndexChanged(object sender, EventArgs e)
         {
             FilterGridData();
+        }
+
+        private void RecipeIngredientsBtn_Click(object sender, EventArgs e)
+        {
+
+            RecipeIngredientsForm form = _serviceProvider.GetRequiredService<RecipeIngredientsForm>();
+            form.ShowDialog();
         }
     }
 
