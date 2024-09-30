@@ -1,4 +1,6 @@
-﻿using DataAccessLayer.Contracts;
+﻿using CookBook.ViewModels;
+using DataAccessLayer.Contracts;
+using DataAccessLayer.CustomQueryResults;
 using DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,7 @@ namespace CookBook.UI
         {
             
             RefreshRecipeIngredients();
+            RefreshAllIngredients();
 
         }
 
@@ -38,10 +41,27 @@ namespace CookBook.UI
         private async void RefreshRecipeIngredients()
         {
 
-            RecipeIngredientslbx.DataSource = await
-                _recipeIngredientsRepository.GetRecipeIngredients(RecipeId);
-            RecipeIngredientslbx.DisplayMember = "Name";
+                List<RecipeIngredientWithNameAndAmount> results = await _recipeIngredientsRepository.GetRecipeIngredients(RecipeId);
+
+
+            List<RecipeIngredientVM> recipeIngredients = new List<RecipeIngredientVM>();
+
+            foreach(var ingredient in results)
+            {
+                recipeIngredients.Add(new RecipeIngredientVM(ingredient.IngredientId, ingredient.Name, ingredient.Amount));
+            }
+
+            RecipeIngredientslbx.DataSource = recipeIngredients;
+            RecipeIngredientslbx.DisplayMember = "NameWithAmount";
+
         }
 
+
+        private async void RefreshAllIngredients()
+        {
+            AllIngredientsLbx.DataSource = await
+                _ingredientsRepository.GetIngredients();
+            AllIngredientsLbx.DisplayMember= "Name";
+        }
     }
 }
