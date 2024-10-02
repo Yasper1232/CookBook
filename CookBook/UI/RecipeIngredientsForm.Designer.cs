@@ -80,6 +80,7 @@
             AddIngredientBtn.TabIndex = 4;
             AddIngredientBtn.Text = "Add ingredient";
             AddIngredientBtn.UseVisualStyleBackColor = true;
+            AddIngredientBtn.Click += AddIngredientBtn_Click;
             // 
             // RemoveIngredientbtn
             // 
