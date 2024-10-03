@@ -34,6 +34,7 @@
             RecipeIngredientslbx = new ListBox();
             AddIngredientBtn = new Button();
             RemoveIngredientbtn = new Button();
+            AllIngredientsCustomLbx = new CustomUserControls.CustomListBox();
             SuspendLayout();
             // 
             // label1
@@ -92,11 +93,19 @@
             RemoveIngredientbtn.UseVisualStyleBackColor = true;
             RemoveIngredientbtn.Click += RemoveIngredientbtn_Click;
             // 
+            // AllIngredientsCustomLbx
+            // 
+            AllIngredientsCustomLbx.Location = new Point(49, 608);
+            AllIngredientsCustomLbx.Name = "AllIngredientsCustomLbx";
+            AllIngredientsCustomLbx.Size = new Size(325, 353);
+            AllIngredientsCustomLbx.TabIndex = 6;
+            // 
             // RecipeIngredientsForm
             // 
             AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(893, 578);
+            ClientSize = new Size(893, 1055);
+            Controls.Add(AllIngredientsCustomLbx);
             Controls.Add(RemoveIngredientbtn);
             Controls.Add(AddIngredientBtn);
             Controls.Add(RecipeIngredientslbx);
@@ -120,5 +129,6 @@
         private ListBox RecipeIngredientslbx;
         private Button AddIngredientBtn;
         private Button RemoveIngredientbtn;
+        private CustomUserControls.CustomListBox AllIngredientsCustomLbx;
     }
 }
