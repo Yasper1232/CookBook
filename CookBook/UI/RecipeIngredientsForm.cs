@@ -67,27 +67,45 @@ namespace CookBook.UI
 
         private async void AddIngredientBtn_Click(object sender, EventArgs e)
         {
-            if (AllIngredientsLbx.SelectedItems != null) 
-            { 
-            AmountForm amountForm = new AmountForm();
-                if(amountForm.ShowDialog() == DialogResult.OK)
+            if (AllIngredientsLbx.SelectedItems != null)
+            {
+                AmountForm amountForm = new AmountForm();
+                if (amountForm.ShowDialog() == DialogResult.OK)
                 {
                     Ingredient selectedIngredient = (Ingredient)AllIngredientsLbx.SelectedItem;
 
-                    RecipeIngredient newRecipeIngredient = new RecipeIngredient(RecipeId, selectedIngredient.Id,amountForm.Amount);
+                    RecipeIngredient newRecipeIngredient = new RecipeIngredient(RecipeId, selectedIngredient.Id, amountForm.Amount);
 
                     bool isExistingIngredient = ((List<RecipeIngredientVM>)
-                        RecipeIngredientslbx.DataSource).Any(i=>i.IngredientId == selectedIngredient.Id);
+                        RecipeIngredientslbx.DataSource).Any(i => i.IngredientId == selectedIngredient.Id);
 
                     if (isExistingIngredient)
                         await _recipeIngredientsRepository.EditRecipeIngredientAmount(newRecipeIngredient);
                     else
-                    await _recipeIngredientsRepository.AddRecipeIngredient(newRecipeIngredient);
+                        await _recipeIngredientsRepository.AddRecipeIngredient(newRecipeIngredient);
 
                     RefreshRecipeIngredients();
 
                 }
             }
+        }
+
+        private async void RemoveIngredientbtn_Click(object sender, EventArgs e)
+        {
+
+            if(RecipeIngredientslbx.SelectedItem != null)
+            {
+
+                RecipeIngredientVM ingredient = (RecipeIngredientVM)RecipeIngredientslbx.SelectedItem;
+
+                await _recipeIngredientsRepository.DeleteRecipeIngredient(ingredient.IngredientId,RecipeId);
+
+
+
+                RefreshRecipeIngredients();
+            }
+
+
         }
     }
 }

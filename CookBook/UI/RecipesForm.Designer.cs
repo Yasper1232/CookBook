@@ -35,7 +35,6 @@
             RecipesGrid = new DataGridView();
             NameTxt = new TextBox();
             ClearAllFieldsBtn = new Button();
-            RecipeIngredientsBtn = new Button();
             AddRecipeBtn = new Button();
             RecipePictureBox = new PictureBox();
             label1 = new Label();
@@ -104,23 +103,13 @@
             // 
             // ClearAllFieldsBtn
             // 
-            ClearAllFieldsBtn.Location = new Point(992, 582);
+            ClearAllFieldsBtn.Location = new Point(992, 575);
             ClearAllFieldsBtn.Name = "ClearAllFieldsBtn";
             ClearAllFieldsBtn.Size = new Size(423, 38);
             ClearAllFieldsBtn.TabIndex = 6;
             ClearAllFieldsBtn.Text = "Clear All Fields";
             ClearAllFieldsBtn.UseVisualStyleBackColor = true;
             ClearAllFieldsBtn.Click += ClearAllFieldsBtn_Click;
-            // 
-            // RecipeIngredientsBtn
-            // 
-            RecipeIngredientsBtn.Location = new Point(992, 541);
-            RecipeIngredientsBtn.Name = "RecipeIngredientsBtn";
-            RecipeIngredientsBtn.Size = new Size(423, 36);
-            RecipeIngredientsBtn.TabIndex = 7;
-            RecipeIngredientsBtn.Text = "Recipe Ingredients";
-            RecipeIngredientsBtn.UseVisualStyleBackColor = true;
-            RecipeIngredientsBtn.Click += RecipeIngredientsBtn_Click;
             // 
             // AddRecipeBtn
             // 
@@ -179,7 +168,7 @@
             // 
             // EditRecipeButton
             // 
-            EditRecipeButton.Location = new Point(992, 500);
+            EditRecipeButton.Location = new Point(993, 500);
             EditRecipeButton.Name = "EditRecipeButton";
             EditRecipeButton.Size = new Size(423, 36);
             EditRecipeButton.TabIndex = 14;
@@ -199,7 +188,6 @@
             Controls.Add(label1);
             Controls.Add(RecipePictureBox);
             Controls.Add(AddRecipeBtn);
-            Controls.Add(RecipeIngredientsBtn);
             Controls.Add(ClearAllFieldsBtn);
             Controls.Add(NameTxt);
             Controls.Add(RecipesGrid);
@@ -227,7 +215,6 @@
         private DataGridView RecipesGrid;
         private TextBox NameTxt;
         private Button ClearAllFieldsBtn;
-        private Button RecipeIngredientsBtn;
         private Button AddRecipeBtn;
         private PictureBox RecipePictureBox;
         private Label label1;

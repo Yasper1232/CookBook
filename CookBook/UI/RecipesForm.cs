@@ -388,12 +388,7 @@ namespace CookBook.UI
             FilterGridData();
         }
 
-        private void RecipeIngredientsBtn_Click(object sender, EventArgs e)
-        {
-
-            RecipeIngredientsForm form = _serviceProvider.GetRequiredService<RecipeIngredientsForm>();
-            form.ShowDialog();
-        }
+       
     }
 
 

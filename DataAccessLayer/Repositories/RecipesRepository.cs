@@ -30,7 +30,7 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex) {
 
-                string errormessage = "An error happend when deleting Recipe";
+                string errormessage = "An error happend while deleting Recipe";
 
                 ErrorOccured(errormessage);
 
