@@ -13,9 +13,14 @@ namespace CookBook.UI.CustomUserControls
 {
     public partial class CustomListBox : UserControl
     {
+        public event Action<ListBoxItemVM> OnSelectedItemChanged;
+        public ListBoxItemVM SelectedItem { get; set; }
+        
+        public List<ListBoxItemVM> DataSource { get { return (List<ListBoxItemVM>)CustomLbx.DataSource; } }
         public CustomListBox()
         {
             InitializeComponent();
+            CustomLbx.DrawMode = DrawMode.OwnerDrawVariable;
         }
 
 
@@ -26,5 +31,48 @@ namespace CookBook.UI.CustomUserControls
 
         }
 
+        private void CustomLbx_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index != -1)
+            {
+                ListBox listBox = (ListBox)sender;
+                var listBoxItem = ((ListBoxItemVM)listBox.Items[e.Index]);
+                Font font = new Font("Century Gothic", 16, FontStyle.Regular);
+                SolidBrush brush = new SolidBrush(Color.Blue);
+                e.DrawBackground();
+                e.Graphics.DrawString(listBoxItem.DisplayText, font, brush, e.Bounds.Location);
+                e.DrawFocusRectangle();
+
+            }
+        }
+
+        private void CustomLbx_MeasureItem(object sender, MeasureItemEventArgs e)
+        {
+            e.ItemHeight = 32;
+        }
+
+        private void CustomLbx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (CustomLbx.SelectedIndex != -1)
+            {
+                {
+
+                    SelectedItem =(ListBoxItemVM) CustomLbx.SelectedItem;
+                    SelectedItemChanged(SelectedItem);
+                }
+            }
+        }
+
+        private void SelectedItemChanged(ListBoxItemVM? selectedItem)
+        {
+            if(OnSelectedItemChanged != null && SelectedItem != null)
+            {
+
+                OnSelectedItemChanged.Invoke(SelectedItem);
+
+
+            }
+        }
     }
 }

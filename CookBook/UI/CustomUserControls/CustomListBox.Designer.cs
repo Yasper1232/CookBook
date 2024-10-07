@@ -34,10 +34,13 @@
             // CustomLbx
             // 
             CustomLbx.FormattingEnabled = true;
-            CustomLbx.Location = new Point(3, 7);
+            CustomLbx.Location = new Point(0, 0);
             CustomLbx.Name = "CustomLbx";
-            CustomLbx.Size = new Size(319, 364);
+            CustomLbx.Size = new Size(325, 384);
             CustomLbx.TabIndex = 0;
+            CustomLbx.DrawItem += CustomLbx_DrawItem;
+            CustomLbx.MeasureItem += CustomLbx_MeasureItem;
+            CustomLbx.SelectedIndexChanged += CustomLbx_SelectedIndexChanged;
             // 
             // CustomListBox
             // 
