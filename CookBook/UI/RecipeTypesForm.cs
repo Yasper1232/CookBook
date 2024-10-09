@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Contracts;
+﻿using CookBook.ViewModels;
+using DataAccessLayer.Contracts;
 using DataAccessLayer.Repositories;
 using DomainModel.Models;
 using System;
@@ -42,9 +43,20 @@ namespace CookBook.UI
         private async void RefreshRecipeTypesList()
         {
 
-            RecipeTypesLbx.DataSource = await _recipeTypesRepository.GetRecipeTypes();
+           
 
-            RecipeTypesLbx.DisplayMember = "Name";
+            List<RecipeType> recipeTypes = await _recipeTypesRepository.GetRecipeTypes();
+
+            List<ListBoxItemVM> customLbxItems = new List<ListBoxItemVM>();
+
+            foreach(var t in recipeTypes)
+            {
+
+                customLbxItems.Add(new ListBoxItemVM(t, t.Name));
+
+            }
+            RecipeTypesCustomLbx.SetDataSource(customLbxItems);
+
 
         }
 

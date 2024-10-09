@@ -38,7 +38,7 @@ namespace CookBook.UI.CustomUserControls
                 ListBox listBox = (ListBox)sender;
                 var listBoxItem = ((ListBoxItemVM)listBox.Items[e.Index]);
                 Font font = new Font("Century Gothic", 16, FontStyle.Regular);
-                SolidBrush brush = new SolidBrush(Color.Blue);
+                SolidBrush brush = new SolidBrush(Color.Black);
                 e.DrawBackground();
                 e.Graphics.DrawString(listBoxItem.DisplayText, font, brush, e.Bounds.Location);
                 e.DrawFocusRectangle();

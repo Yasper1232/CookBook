@@ -30,8 +30,8 @@
         {
             label1 = new Label();
             NewTypeTxt = new TextBox();
-            RecipeTypesLbx = new ListBox();
             AddRecipeTypeBtn = new Button();
+            RecipeTypesCustomLbx = new CustomUserControls.CustomListBox();
             SuspendLayout();
             // 
             // label1
@@ -50,15 +50,6 @@
             NewTypeTxt.Size = new Size(278, 43);
             NewTypeTxt.TabIndex = 1;
             // 
-            // RecipeTypesLbx
-            // 
-            RecipeTypesLbx.FormattingEnabled = true;
-            RecipeTypesLbx.ItemHeight = 37;
-            RecipeTypesLbx.Location = new Point(51, 123);
-            RecipeTypesLbx.Name = "RecipeTypesLbx";
-            RecipeTypesLbx.Size = new Size(386, 300);
-            RecipeTypesLbx.TabIndex = 2;
-            // 
             // AddRecipeTypeBtn
             // 
             AddRecipeTypeBtn.Location = new Point(62, 472);
@@ -69,13 +60,21 @@
             AddRecipeTypeBtn.UseVisualStyleBackColor = true;
             AddRecipeTypeBtn.Click += AddRecipeTypeBtn_Click;
             // 
+            // RecipeTypesCustomLbx
+            // 
+            RecipeTypesCustomLbx.Location = new Point(62, 102);
+            RecipeTypesCustomLbx.Name = "RecipeTypesCustomLbx";
+            RecipeTypesCustomLbx.SelectedItem = null;
+            RecipeTypesCustomLbx.Size = new Size(375, 353);
+            RecipeTypesCustomLbx.TabIndex = 4;
+            // 
             // RecipeTypesForm
             // 
             AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(509, 568);
+            ClientSize = new Size(1066, 568);
+            Controls.Add(RecipeTypesCustomLbx);
             Controls.Add(AddRecipeTypeBtn);
-            Controls.Add(RecipeTypesLbx);
             Controls.Add(NewTypeTxt);
             Controls.Add(label1);
             Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 238);
@@ -91,7 +90,7 @@
 
         private Label label1;
         private TextBox NewTypeTxt;
-        private ListBox RecipeTypesLbx;
         private Button AddRecipeTypeBtn;
+        private CustomUserControls.CustomListBox RecipeTypesCustomLbx;
     }
 }

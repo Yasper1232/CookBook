@@ -33,10 +33,11 @@
             // 
             // CustomLbx
             // 
+            CustomLbx.Dock = DockStyle.Fill;
             CustomLbx.FormattingEnabled = true;
             CustomLbx.Location = new Point(0, 0);
             CustomLbx.Name = "CustomLbx";
-            CustomLbx.Size = new Size(325, 384);
+            CustomLbx.Size = new Size(603, 466);
             CustomLbx.TabIndex = 0;
             CustomLbx.DrawItem += CustomLbx_DrawItem;
             CustomLbx.MeasureItem += CustomLbx_MeasureItem;
@@ -48,7 +49,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(CustomLbx);
             Name = "CustomListBox";
-            Size = new Size(325, 377);
+            Size = new Size(603, 466);
             ResumeLayout(false);
         }
 
