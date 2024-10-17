@@ -39,10 +39,18 @@ namespace CookBook.UI
             var ingredients = _foodManagerCache.GetIngredients(selectedRecipe.Id);
             List<ListBoxItemVM> dataSource = new List<ListBoxItemVM>();
 
+            decimal totalKcal = 0;
+            decimal totalPrice = 0;
+
+
+
             foreach(RecipeIngredientExtendedVM ingredient in ingredients)
             {
                 ListBoxItemVM item = new ListBoxItemVM(ingredient,ingredient.NameWithMissingAmount);
                 dataSource.Add(item);
+
+                totalKcal += (ingredient.KcalPer100g/100)*ingredient.Amount;
+                totalPrice += (ingredient.PricePer100g)/100*ingredient.Amount;
             }
             IngredientsLbx.SetDataSource(dataSource);
 
@@ -50,6 +58,9 @@ namespace CookBook.UI
             if(selectedRecipe.Image !=null)
             RecipePicture.Image = ImageHelper.ConvertFromDbImage( selectedRecipe.Image );
             else RecipePicture.Image = ImageHelper.PlaceholderImage;
+
+            TotalKcalLbl.Text = totalKcal.ToString();   
+            TotalPriceLbl.Text = totalPrice.ToString();
         }
 
         private async void FoodManagerForm_Load(object sender, EventArgs e)
@@ -75,6 +86,9 @@ namespace CookBook.UI
 
             RecipesLbx.SetDataSource(dataSource);
 
+            CreateShopingListBtn.Visible = false;
+            PrepareFoodBtn.Visible = true;
+
         }
 
         private void UnvailableBtn_Click(object sender, EventArgs e)
@@ -90,6 +104,9 @@ namespace CookBook.UI
             }
 
             RecipesLbx.SetDataSource(dataSource);
+
+            CreateShopingListBtn.Visible = true;
+            PrepareFoodBtn.Visible = false;
         }
     }
 }

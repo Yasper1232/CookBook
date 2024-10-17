@@ -86,7 +86,7 @@ namespace CookBook.Services
                 Ingredient fi = _ingredients.FirstOrDefault(i=> i.Id == sri.IngredientId);
                 
                 decimal missingAmount = Math.Max(0, sri.Amount - fi.Weight);
-                ingredientsToReturn.Add(new RecipeIngredientExtendedVM(sri.IngredientId, fi.Name, sri.Amount, missingAmount));
+                ingredientsToReturn.Add(new RecipeIngredientExtendedVM(sri.IngredientId, fi.Name, sri.Amount, missingAmount,fi.KcalPer100g,fi.PricePer100g));
             }
             return ingredientsToReturn;
 
