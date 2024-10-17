@@ -12,7 +12,7 @@ namespace CookBook.ViewModels
         public string Name { get; set; }
         public decimal Amount { get; set; }
 
-        public string NameWithAmount { get { return Name + " (" + Amount + " g)"; } }
+        public string NameWithAmount { get { return Name + " (" + (int)Amount + " g)"; } }
 
 
         public RecipeIngredientVM(int ingredientId, string name, decimal amount)

@@ -1,3 +1,4 @@
+using CookBook.Services;
 using CookBook.UI;
 using DataAccessLayer.Contracts;
 using DataAccessLayer.Repositories;
@@ -20,7 +21,7 @@ namespace CookBook
             ServiceCollection services = ConfigureServices();
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
-            var startForm = serviceProvider.GetRequiredService<RecipesForm>();
+            var startForm = serviceProvider.GetRequiredService<FoodManagerForm>();
             Application.Run(startForm);
         }
 
@@ -28,23 +29,20 @@ namespace CookBook
         {
             ServiceCollection services = new ServiceCollection();
 
-            
-                services.AddTransient<IIngredientsRepository>(_ => new IngredientsRepository());
-
+            services.AddTransient<IIngredientsRepository>(_ => new IngredientsRepository());
             services.AddTransient<IRecipeTypesRepository>(_ => new RecipeTypesRepository());
-
             services.AddTransient<IRecipeRepository>(_ => new RecipesRepository());
-
             services.AddTransient<IRecipeIngredientsRepository>(_ => new RecipeIngredientsRepository());
 
-
-             
 
             services.AddTransient<IngredientsForm>();
             services.AddTransient<RecipesForm>();
             services.AddTransient<RecipeTypesForm>();
             services.AddTransient<RecipeIngredientsForm>();
+            services.AddTransient<AmountForm>();
+            services.AddTransient<FoodManagerForm>();
 
+            services.AddTransient<FoodManagerCache>();
 
             return services;
 
@@ -52,6 +50,3 @@ namespace CookBook
 
     }
 }
-
-
-

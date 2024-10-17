@@ -23,6 +23,11 @@ namespace DomainModel.Models
         
         }
 
+        public RecipeIngredient() { }
+
+
+      
+
     }
 
 

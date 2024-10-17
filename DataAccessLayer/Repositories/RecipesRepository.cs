@@ -8,40 +8,86 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using System.Xml.Linq;
 using DataAccessLayer.CustomQueryResults;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccessLayer.Repositories
 {
     public class RecipesRepository : IRecipeRepository
     {
+        public event Action<string> OnError;
+        private void ErrorOccured(string errorMessage)
+        {
+            if (OnError != null)
+                OnError.Invoke(errorMessage);
+        }
+        public async Task AddRecipe(Recipe recipe)
+        {
+            try
+            {
+                string query = @"insert into Recipes 
+                (Name, Description, Image, RecipeTypeId) 
+                values (@Name, @Description, @Image, @RecipeTypeId)";
 
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    await connection.ExecuteAsync(query, recipe);
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                string errorMessage = "";
+                if (sqlEx.Number == 2627)
+                    errorMessage = "That recipe already exists.";
+                else
+                    errorMessage = "An error happened in the database.";
+                ErrorOccured(errorMessage);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = "An error happened while adding recipe.";
+                ErrorOccured(errorMessage);
+            }
+        }
+        public async Task<List<RecipeWithType>> GetRecipes()
+        {
+            try
+            {
+                string query = @"select r.Id, r.Name, r.Description, rt.Name as 'Type', r.RecipeTypeId, r.Image
+                                from Recipes as r join RecipeTypes as rt
+                                on r.RecipeTypeId = rt.Id";
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+                    return (await connection.QueryAsync<RecipeWithType>(query)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = "An error happened while getting recipes.";
+                ErrorOccured(errorMessage);
+                return new List<RecipeWithType>();
+            }
+        }
         public async Task DeleteRecipe(int Id)
         {
             try
             {
-                string query = @$"delete from Recipes where id={Id}";
+                string query = @$"delete from Recipes where Id={Id}";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
                 {
                     await connection.ExecuteAsync(query);
                 }
-
             }
-            catch (Exception ex) {
-
-                string errormessage = "An error happend while deleting Recipe";
-
-                ErrorOccured(errormessage);
-
+            catch (Exception ex)
+            {
+                string errorMessage = "An error happened while deleting recipe.";
+                ErrorOccured(errorMessage);
             }
-
-
         }
-
         public async Task EditRecipe(Recipe recipe)
         {
-
             try
             {
                 string query = @"update Recipes
@@ -49,12 +95,8 @@ namespace DataAccessLayer.Repositories
                              Name = @Name,
                              Description = @Description,
                              RecipeTypeId = @RecipeTypeId"
-                          + (recipe.Image!=null? ",Image = @Image":"")   
-                             +" where Id = @Id";
-
-
-
-
+                            + (recipe.Image != null ? ",Image=@Image" : "")
+                            + " where Id = @Id";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
                 {
@@ -63,98 +105,28 @@ namespace DataAccessLayer.Repositories
             }
             catch (Exception ex)
             {
-
-
-
-                string errorMessage = "An error happend while editing recipe";
-
+                string errorMessage = "An error happened while editing recipe.";
                 ErrorOccured(errorMessage);
             }
 
         }
 
-        public event Action<string> OnError;
-
-        private void ErrorOccured(string errorMessage)
-        {
-            if (OnError != null)
-                OnError.Invoke(errorMessage);
-        }
-
-        public async Task AddRecipe(Recipe recipe)
+        public async Task<List<Recipe>> GetAllRecipes()
         {
             try
             {
-                string query = @"insert into Recipes 
-                (Name,Description,Image,RecipeTypeId) 
-                values (@Name, @Description, @Image, @RecipeTypeId)";
+                string query = "select * from Recipes";
 
                 using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
                 {
-                    await connection.ExecuteAsync(query, recipe);
+                    return (await connection.QueryAsync<Recipe>(query)).ToList();
                 }
-
-
-            }
-            catch (SqlException ex)
-            {
-                string errorMessage = "";
-                if (ex.Number == 2627)
-                {
-
-                    errorMessage = "That recipe already exists!";
-
-                }
-                else
-                {
-                    errorMessage = "Error happend in database:(";
-                }
-
-                ErrorOccured(errorMessage);
-            }
-
-            catch (Exception ex)
-            {
-
-
-                //2627
-                string errorMessage = "An error happend while adding recipe";
-
-                ErrorOccured(errorMessage);
-                // Logger.LogError(ex.Message, DateTime.Now);
-            }
-        }
-
-        public async Task<List<RecipeWithType>> GetRecipes()
-        {
-
-            try
-            {
-
-                string query = @"select r.Id,r.Name,r.Description,rt.Name as 'Type',r.RecipeTypeId,r.Image
-                                 from
-                                 Recipes as r join RecipeTypes as rt
-                                 on r.RecipeTypeId = rt.Id";
-
-                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
-                {
-
-                    return (await connection.QueryAsync<RecipeWithType>(query)).ToList();
-
-                }
-
             }
             catch (Exception ex)
             {
-                {
-
-
-                    string errorMessage = "An error happend while getting recipes.";
-
-                    ErrorOccured(errorMessage);
-                    return new List<RecipeWithType>();
-                }
-
+                string errorMessage = "An error happened while getting all recipes.";
+                ErrorOccured(errorMessage);
+                return new List<Recipe>();
             }
         }
     }

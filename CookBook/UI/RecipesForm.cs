@@ -29,15 +29,7 @@ namespace CookBook.UI
         private readonly IServiceProvider _serviceProvider;
 
         int _recipeToEditId;
-        private Image _placeholderImage
-        {
-            get
-            {
-                var executingAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var imagePath = Path.Combine(executingAssemblyLocation, "Assets\\Images\\recipe_placeholder_image.png");
-                return Image.FromFile(imagePath);
-            }
-        }
+        
         private bool _isUserImageAdded = false;
 
 
@@ -108,7 +100,7 @@ namespace CookBook.UI
             await RefreshRecipeTypes();
 
             RefreshRecipesCache();
-            RecipePictureBox.Image = _placeholderImage;
+            RecipePictureBox.Image = ImageHelper.PlaceholderImage;
             RecipePictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             EditRecipeButton.Visible = false;
         }
@@ -184,7 +176,7 @@ namespace CookBook.UI
             NameTxt.Text = string.Empty;
             DescriptionTxt.Text = string.Empty;
             RecipePictureBox.ImageLocation = string.Empty;
-            RecipePictureBox.Image = _placeholderImage;
+            RecipePictureBox.Image = ImageHelper.PlaceholderImage;
             _isUserImageAdded = false;
 
 
@@ -338,7 +330,7 @@ namespace CookBook.UI
             if (clickedRecipe.Image != null)
                 RecipePictureBox.Image = ImageHelper.ConvertFromDbImage(clickedRecipe.Image);
             else
-                RecipePictureBox.Image = _placeholderImage;
+                RecipePictureBox.Image = ImageHelper.PlaceholderImage;
 
             RecipeTypesCbx.SelectedIndex = FindRecipeTypeIndex(clickedRecipe.RecipeTypeId);
 
