@@ -139,5 +139,34 @@ namespace DataAccessLayer.Repositories
             }
 
         }
+
+        public async Task<List<RecipeIngredient>> GetAllRecipeIngredients()
+        {
+             try
+            {
+
+                string query = "select * from RecipeIngredients";
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+
+                    return (await connection.QueryAsync<RecipeIngredient>(query)).ToList();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                {
+
+
+                    string errorMessage = "An error happend while getting all recipe ingredients.";
+
+                    ErrorOccured(errorMessage);
+                    return new List<RecipeIngredient>();
+                }
+
+            }
+        }
     }
 }

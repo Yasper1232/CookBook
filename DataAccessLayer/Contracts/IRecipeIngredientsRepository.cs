@@ -16,5 +16,7 @@ namespace DataAccessLayer.Contracts
         public Task AddRecipeIngredient(RecipeIngredient recipeingredient);
         public Task DeleteRecipeIngredient(int ingredientId, int recipeId);
         public Task EditRecipeIngredientAmount(RecipeIngredient recipeIngredient);
+
+        public Task<List<RecipeIngredient>> GetAllRecipeIngredients();   
     }
 }
