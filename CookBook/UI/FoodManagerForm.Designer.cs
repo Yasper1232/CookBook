@@ -68,6 +68,7 @@
             RecipesLbx.SelectedItem = null;
             RecipesLbx.Size = new Size(381, 402);
             RecipesLbx.TabIndex = 4;
+            RecipesLbx.Load += RecipesLbx_Load;
             // 
             // PrepareFoodBtn
             // 
@@ -77,6 +78,7 @@
             PrepareFoodBtn.TabIndex = 3;
             PrepareFoodBtn.Text = "Prepare food";
             PrepareFoodBtn.UseVisualStyleBackColor = true;
+            PrepareFoodBtn.Click += PrepareFoodBtn_Click;
             // 
             // CreateShopingListBtn
             // 

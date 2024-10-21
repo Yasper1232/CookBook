@@ -16,12 +16,14 @@ using System.Windows.Forms;
 
 namespace CookBook.UI
 {
+
+    public enum RecipeAvailability { Available,Unavailable};
     public partial class FoodManagerForm : Form
     {
         private readonly IServiceProvider _serviceProvider;
         FoodManagerCache _foodManagerCache;
 
-       
+
         public FoodManagerForm(IServiceProvider serviceProvider)
         {
             InitializeComponent();
@@ -44,22 +46,22 @@ namespace CookBook.UI
 
 
 
-            foreach(RecipeIngredientExtendedVM ingredient in ingredients)
+            foreach (RecipeIngredientExtendedVM ingredient in ingredients)
             {
-                ListBoxItemVM item = new ListBoxItemVM(ingredient,ingredient.NameWithMissingAmount);
+                ListBoxItemVM item = new ListBoxItemVM(ingredient, ingredient.NameWithMissingAmount);
                 dataSource.Add(item);
 
-                totalKcal += (ingredient.KcalPer100g/100)*ingredient.Amount;
-                totalPrice += (ingredient.PricePer100g)/100*ingredient.Amount;
+                totalKcal += (ingredient.KcalPer100g / 100) * ingredient.Amount;
+                totalPrice += (ingredient.PricePer100g) / 100 * ingredient.Amount;
             }
             IngredientsLbx.SetDataSource(dataSource);
 
             DescriptionTxt.Text = selectedRecipe.Description;
-            if(selectedRecipe.Image !=null)
-            RecipePicture.Image = ImageHelper.ConvertFromDbImage( selectedRecipe.Image );
+            if (selectedRecipe.Image != null)
+                RecipePicture.Image = ImageHelper.ConvertFromDbImage(selectedRecipe.Image);
             else RecipePicture.Image = ImageHelper.PlaceholderImage;
 
-            TotalKcalLbl.Text = totalKcal.ToString();   
+            TotalKcalLbl.Text = totalKcal.ToString();
             TotalPriceLbl.Text = totalPrice.ToString();
         }
 
@@ -68,34 +70,52 @@ namespace CookBook.UI
             await _foodManagerCache.RefreshData();
 
             RecipePicture.SizeMode = PictureBoxSizeMode.StretchImage;
+            
+            RefreshRecipesLbx(RecipeAvailability.Available);
+
 
         }
-
         private void AvailableBtn_Click(object sender, EventArgs e)
         {
 
-            List<ListBoxItemVM> dataSource = new List<ListBoxItemVM>();
-
-            foreach (Recipe recipe in _foodManagerCache.AvailableRecipes)
+            if (RecipesLbx.SelectedItem == null)
             {
-
-                ListBoxItemVM item = new ListBoxItemVM(recipe, recipe.Name);
-                dataSource.Add(item);
-
+                RightPanel.Visible = false;
             }
+            RefreshRecipesLbx(RecipeAvailability.Available);
 
-            RecipesLbx.SetDataSource(dataSource);
-
-            CreateShopingListBtn.Visible = false;
-            PrepareFoodBtn.Visible = true;
-
+          
         }
 
         private void UnvailableBtn_Click(object sender, EventArgs e)
         {
-            List<ListBoxItemVM> dataSource = new List<ListBoxItemVM>();
+            RefreshRecipesLbx(RecipeAvailability.Unavailable);
+            RightPanel.Visible = true;
 
-            foreach (Recipe recipe in _foodManagerCache.UnavailableRecipes)
+        }
+
+
+        private void RefreshRecipesLbx(RecipeAvailability recipeAvailability)
+        {
+            List<ListBoxItemVM> dataSource = new List<ListBoxItemVM>();
+            List<Recipe> recipes = new List<Recipe>();
+            if (recipeAvailability == RecipeAvailability.Available)
+            {
+                recipes = _foodManagerCache.AvailableRecipes;
+
+
+                PrepareFoodBtn.Visible = true;
+                CreateShopingListBtn.Visible = false;
+            }
+            else if (recipeAvailability == RecipeAvailability.Unavailable)
+            {
+                recipes = _foodManagerCache.UnavailableRecipes;
+                PrepareFoodBtn.Visible = false;
+                CreateShopingListBtn.Visible = true;
+
+            }
+
+            foreach (Recipe recipe in recipes)
             {
 
                 ListBoxItemVM item = new ListBoxItemVM(recipe, recipe.Name);
@@ -105,8 +125,36 @@ namespace CookBook.UI
 
             RecipesLbx.SetDataSource(dataSource);
 
-            CreateShopingListBtn.Visible = true;
-            PrepareFoodBtn.Visible = false;
+            if (RecipesLbx.SelectedItem == null)
+                RightPanel.Visible = false;
+           
+
+
+
+        }
+
+        private async void PrepareFoodBtn_Click(object sender, EventArgs e)
+        {
+
+            if (RecipesLbx.SelectedItem == null)
+            return;
+            Recipe selectedRecipe = RecipesLbx.SelectedItem.Item as Recipe;
+
+            await _foodManagerCache.PrepareFood(selectedRecipe);
+
+            await _foodManagerCache.RefreshData();
+            RefreshRecipesLbx(RecipeAvailability.Available);
+
+
+
+
+        }
+
+        private void RecipesLbx_Load(object sender, EventArgs e)
+        {
+
+           
+
         }
     }
 }

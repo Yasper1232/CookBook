@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace DataAccessLayer.Repositories
 
         public event Action<string> OnError;
 
+        public event Action<string> OnSuccess;
 
         public async Task AddIngredient(Ingredient ingredient)
         {
@@ -73,6 +75,13 @@ namespace DataAccessLayer.Repositories
             if(OnError != null)
                 OnError.Invoke(errorMessage);
         }
+
+        private void SuccessfullyCompleted(string successMessage)
+        {
+            if(OnSuccess!= null) OnSuccess.Invoke(successMessage);
+        }
+
+
         public async Task<List<Ingredient>> GetIngredients(string? name = "")
         {
 
@@ -158,6 +167,45 @@ namespace DataAccessLayer.Repositories
 
         }
 
+        public async Task UpdateAmounts(List<RecipeIngredient> recipeIngredients)
+        {
+            string query = "";
 
+            foreach (RecipeIngredient recipeIngredient in recipeIngredients)
+            {
+
+                string formattedAmount = recipeIngredient.Amount.ToString("0.00",CultureInfo.InvariantCulture);
+                query += $@"update Ingredients
+                             set
+                             Weight = Weight - {formattedAmount}
+                             where Id = {recipeIngredient.IngredientId} ";
+            }
+
+
+
+                try
+                {
+
+                using (IDbConnection connection = new SqlConnection(ConnectionHelper.ConnectionString))
+                {
+
+                        await connection.ExecuteAsync(query);
+                    SuccessfullyCompleted("Successfully Completed !");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+
+
+                string errorMessage = "An error happend while updating ingredient";
+
+                ErrorOccured(errorMessage);
+            }
+
+
+
+        }
     }
 }

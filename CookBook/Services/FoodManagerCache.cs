@@ -29,7 +29,21 @@ namespace CookBook.Services
             _ingredientsRepository = ingredientsRepository;
             _recipeRepository = recipesRepository;
             _recipeIngredientsRepository = recipeIngredientsRepository;
+            _ingredientsRepository.OnSuccess += ShowSuccessMessage;
+            _ingredientsRepository.OnError += ShowErrorMessage;
+
         }
+        //Bad SoC, this code should be in UI form
+        private void ShowErrorMessage(string successMessage)
+        {
+            MessageBox.Show(successMessage);
+        }
+        //Bad SoC, this code should be in UI form
+
+        private void ShowSuccessMessage(string errorMessage)
+        { 
+            MessageBox.Show(errorMessage);
+         }
 
         public async Task RefreshData()
         {
@@ -92,7 +106,12 @@ namespace CookBook.Services
 
         }
 
-        
+        public async Task PrepareFood(Recipe selectedRecipe)
+        {
 
+            List<RecipeIngredient> recipeIngredients = _recipeIngredients.Where(ri=>ri.RecipeId == selectedRecipe.Id).ToList();
+
+            await _ingredientsRepository.UpdateAmounts(recipeIngredients);
+        }
     }
 }
