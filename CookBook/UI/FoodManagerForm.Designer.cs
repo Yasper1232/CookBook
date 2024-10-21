@@ -50,6 +50,7 @@
             // 
             // LeftPanel
             // 
+            LeftPanel.BackColor = Color.CornflowerBlue;
             LeftPanel.Controls.Add(RecipesLbx);
             LeftPanel.Controls.Add(PrepareFoodBtn);
             LeftPanel.Controls.Add(CreateShopingListBtn);
@@ -72,9 +73,9 @@
             // 
             // PrepareFoodBtn
             // 
-            PrepareFoodBtn.Location = new Point(3, 501);
+            PrepareFoodBtn.Location = new Point(12, 463);
             PrepareFoodBtn.Name = "PrepareFoodBtn";
-            PrepareFoodBtn.Size = new Size(390, 56);
+            PrepareFoodBtn.Size = new Size(381, 56);
             PrepareFoodBtn.TabIndex = 3;
             PrepareFoodBtn.Text = "Prepare food";
             PrepareFoodBtn.UseVisualStyleBackColor = true;
@@ -82,35 +83,39 @@
             // 
             // CreateShopingListBtn
             // 
-            CreateShopingListBtn.Location = new Point(3, 501);
+            CreateShopingListBtn.Location = new Point(12, 501);
             CreateShopingListBtn.Name = "CreateShopingListBtn";
-            CreateShopingListBtn.Size = new Size(387, 56);
+            CreateShopingListBtn.Size = new Size(381, 56);
             CreateShopingListBtn.TabIndex = 2;
             CreateShopingListBtn.Text = "Create shopping list";
             CreateShopingListBtn.UseVisualStyleBackColor = true;
+            CreateShopingListBtn.Click += CreateShopingListBtn_Click;
             // 
             // UnvailableBtn
             // 
+            UnvailableBtn.BackColor = Color.FromArgb(255, 128, 128);
             UnvailableBtn.Location = new Point(211, 12);
             UnvailableBtn.Name = "UnvailableBtn";
             UnvailableBtn.Size = new Size(182, 63);
             UnvailableBtn.TabIndex = 1;
             UnvailableBtn.Text = "Unvailable";
-            UnvailableBtn.UseVisualStyleBackColor = true;
+            UnvailableBtn.UseVisualStyleBackColor = false;
             UnvailableBtn.Click += UnvailableBtn_Click;
             // 
             // AvailableBtn
             // 
+            AvailableBtn.BackColor = Color.LimeGreen;
             AvailableBtn.Location = new Point(12, 12);
             AvailableBtn.Name = "AvailableBtn";
             AvailableBtn.Size = new Size(193, 63);
             AvailableBtn.TabIndex = 0;
             AvailableBtn.Text = "Available";
-            AvailableBtn.UseVisualStyleBackColor = true;
+            AvailableBtn.UseVisualStyleBackColor = false;
             AvailableBtn.Click += AvailableBtn_Click;
             // 
             // RightPanel
             // 
+            RightPanel.BackColor = Color.RoyalBlue;
             RightPanel.Controls.Add(IngredientsLbx);
             RightPanel.Controls.Add(DescriptionTxt);
             RightPanel.Controls.Add(RecipePicture);

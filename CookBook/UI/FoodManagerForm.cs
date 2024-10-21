@@ -70,7 +70,7 @@ namespace CookBook.UI
             await _foodManagerCache.RefreshData();
 
             RecipePicture.SizeMode = PictureBoxSizeMode.StretchImage;
-            
+
             RefreshRecipesLbx(RecipeAvailability.Available);
 
 
@@ -78,21 +78,18 @@ namespace CookBook.UI
         private void AvailableBtn_Click(object sender, EventArgs e)
         {
 
-            if (RecipesLbx.SelectedItem == null)
-            {
-                RightPanel.Visible = false;
-            }
             RefreshRecipesLbx(RecipeAvailability.Available);
 
-          
+
         }
 
         private void UnvailableBtn_Click(object sender, EventArgs e)
         {
             RefreshRecipesLbx(RecipeAvailability.Unavailable);
-            RightPanel.Visible = true;
 
         }
+
+
 
 
         private void RefreshRecipesLbx(RecipeAvailability recipeAvailability)
@@ -125,9 +122,8 @@ namespace CookBook.UI
 
             RecipesLbx.SetDataSource(dataSource);
 
-            if (RecipesLbx.SelectedItem == null)
-                RightPanel.Visible = false;
-           
+
+
 
 
 
@@ -137,7 +133,7 @@ namespace CookBook.UI
         {
 
             if (RecipesLbx.SelectedItem == null)
-            return;
+                return;
             Recipe selectedRecipe = RecipesLbx.SelectedItem.Item as Recipe;
 
             await _foodManagerCache.PrepareFood(selectedRecipe);
@@ -153,8 +149,63 @@ namespace CookBook.UI
         private void RecipesLbx_Load(object sender, EventArgs e)
         {
 
-           
 
+
+        }
+
+        private void CreateShopingListBtn_Click(object sender, EventArgs e)
+        {
+
+            if(_foodManagerCache.UnavailableRecipes.Count == 0)
+            {
+                MessageBox.Show("There are no unavailable recipes !");
+                return;
+            }
+
+            string shopingList = "";
+
+            foreach (Recipe recipe in _foodManagerCache.UnavailableRecipes) 
+            {
+                shopingList += $"Missing ingredients for {recipe.Name}\n";
+            var recipeIngredients = _foodManagerCache.GetIngredients(recipe.Id);
+
+                foreach (var ingredient in recipeIngredients) { 
+                
+                if(ingredient.MissingAmount != 0)
+                    {
+
+                        shopingList += $"{ingredient.Name} {ingredient.MissingAmount}g \n";
+
+                    }
+
+                    shopingList += "\n";
+                
+                }
+
+                try
+                {
+
+                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    string fileName = "ShoppingList.txt";
+
+                    string filePath = Path.Combine(desktopPath, fileName);
+
+                    using (StreamWriter sw = new StreamWriter(filePath)) 
+                    {
+                    sw.Write(shopingList);
+                    }
+
+
+                }
+                catch (Exception ex) 
+                {
+
+                    MessageBox.Show("error while creating shopping list");
+                
+                }
+            
+            }
         }
     }
 }
