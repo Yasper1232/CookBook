@@ -194,7 +194,7 @@
             // 
             AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1856, 992);
+            ClientSize = new Size(1856, 626);
             Controls.Add(EditIngredientBtn);
             Controls.Add(ClearAllFieldsButton);
             Controls.Add(SearchTxt);

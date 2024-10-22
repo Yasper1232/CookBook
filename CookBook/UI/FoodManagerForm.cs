@@ -156,7 +156,7 @@ namespace CookBook.UI
         private void CreateShopingListBtn_Click(object sender, EventArgs e)
         {
 
-            if(_foodManagerCache.UnavailableRecipes.Count == 0)
+            if(!_foodManagerCache.UnavailableRecipes.Any())
             {
                 MessageBox.Show("There are no unavailable recipes !");
                 return;

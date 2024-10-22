@@ -127,7 +127,7 @@
             RightPanel.Dock = DockStyle.Fill;
             RightPanel.Location = new Point(399, 0);
             RightPanel.Name = "RightPanel";
-            RightPanel.Size = new Size(822, 610);
+            RightPanel.Size = new Size(966, 610);
             RightPanel.TabIndex = 1;
             // 
             // IngredientsLbx
@@ -203,7 +203,7 @@
             // 
             AutoScaleDimensions = new SizeF(14F, 27F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1221, 610);
+            ClientSize = new Size(1365, 610);
             Controls.Add(RightPanel);
             Controls.Add(LeftPanel);
             Font = new Font("SimSun", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
