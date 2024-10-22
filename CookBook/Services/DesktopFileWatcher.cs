@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +10,10 @@ namespace CookBook.Services
     public class DesktopFileWatcher
     {
 
-        private static volatile DesktopFileWatcher _instance;
+        private static volatile DesktopFileWatcher _instance; //private instance
         private static readonly object _lock = new object();
-        public static DesktopFileWatcher Instance
+        private BackgroundWorker _fileCheckWorker;
+        public static DesktopFileWatcher Instance   // public instance
         {
             get
             {
@@ -36,6 +38,30 @@ namespace CookBook.Services
 
         }
 
-        private DesktopFileWatcher() { }  //private constructor 
+        private DesktopFileWatcher() //private constructor
+        {
+            _fileCheckWorker = new BackgroundWorker();
+            _fileCheckWorker.DoWork += FileCheckWorker_DoWork;
+            _fileCheckWorker.RunWorkerAsync();
+        }
+
+        private void FileCheckWorker_DoWork(object? sender, DoWorkEventArgs e)
+        {
+           
+           string desktopPath  = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            string filePath = Path.Combine(desktopPath, "ShoppingList.txt");
+
+
+            while (true) 
+            {
+
+                bool fileExists = File.Exists(filePath);
+                //TODO ; send notification about file status
+                Thread.Sleep(5000);
+            }
+
+
+        }
     }
 }
