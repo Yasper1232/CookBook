@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace CookBook.UI
 {
@@ -23,6 +24,7 @@ namespace CookBook.UI
         private readonly IServiceProvider _serviceProvider;
         FoodManagerCache _foodManagerCache;
 
+        DesktopFileWatcher _desktopFileWatcher;
 
         public FoodManagerForm(IServiceProvider serviceProvider)
         {
@@ -30,8 +32,23 @@ namespace CookBook.UI
 
             _serviceProvider = serviceProvider;
             _foodManagerCache = _serviceProvider.GetRequiredService<FoodManagerCache>();
-
+                _desktopFileWatcher = _serviceProvider.GetRequiredService<DesktopFileWatcher>();
             RecipesLbx.OnSelectedItemChanged += OnSelectedRecipeChanged;
+            _desktopFileWatcher.OnFileStatusChanged += OnFileStatusChanged;
+            
+            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff") +"food manager form is subscribed and listening for notifications");
+            NotificationIcon.Visible = DesktopFileWatcher.CurrentFileStatus;
+        }
+
+        private void OnFileStatusChanged(bool fileExists)
+        {
+
+            Debug.WriteLine("Notification recived, file status: " + fileExists);   
+
+            Invoke(new Action(() =>
+            {
+                NotificationIcon.Visible = fileExists;
+            }));
         }
 
         private void OnSelectedRecipeChanged(ListBoxItemVM selectedItem)

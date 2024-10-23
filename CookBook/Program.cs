@@ -42,9 +42,9 @@ namespace CookBook
             services.AddTransient<AmountForm>();
             services.AddTransient<FoodManagerForm>();
             services.AddTransient<Home>();
-
-
             services.AddTransient<FoodManagerCache>();
+            services.AddTransient<Home>();
+            services.AddSingleton(DesktopFileWatcher.Instance);
 
             return services;
 
