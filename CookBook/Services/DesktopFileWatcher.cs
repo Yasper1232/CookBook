@@ -69,7 +69,7 @@ namespace CookBook.Services
                     CurrentFileStatus = fileExists;
                 }
 
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
             }
 
 
@@ -79,16 +79,13 @@ namespace CookBook.Services
         private void FileStatusChanged(bool fileExists)
         {
 
-            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff") + "Checking if there are any subscribers... ");
           
             if(OnFileStatusChanged != null)
             {
                 OnFileStatusChanged.Invoke(fileExists);
-                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff") + "Notification send, file status: " + fileExists);
 
             }
-            else
-                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff") + "Notification wasnt send because no subscribers");
+           
 
 
 

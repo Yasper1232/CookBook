@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             LeftPanel = new Panel();
             RecipesLbx = new CustomUserControls.CustomListBox();
             PrepareFoodBtn = new Button();
@@ -35,6 +36,7 @@
             UnvailableBtn = new Button();
             AvailableBtn = new Button();
             RightPanel = new Panel();
+            NotificationIcon = new PictureBox();
             IngredientsLbx = new CustomUserControls.CustomListBox();
             DescriptionTxt = new RichTextBox();
             RecipePicture = new PictureBox();
@@ -43,11 +45,11 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
-            NotificationIcon = new PictureBox();
+            notificationTooltip = new ToolTip(components);
             LeftPanel.SuspendLayout();
             RightPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)RecipePicture).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NotificationIcon).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)RecipePicture).BeginInit();
             SuspendLayout();
             // 
             // LeftPanel
@@ -133,6 +135,18 @@
             RightPanel.Size = new Size(966, 682);
             RightPanel.TabIndex = 1;
             // 
+            // NotificationIcon
+            // 
+            NotificationIcon.Image = Properties.Resources.notification;
+            NotificationIcon.Location = new Point(345, 18);
+            NotificationIcon.Name = "NotificationIcon";
+            NotificationIcon.Size = new Size(92, 91);
+            NotificationIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            NotificationIcon.TabIndex = 8;
+            NotificationIcon.TabStop = false;
+            NotificationIcon.MouseEnter += NotificationIcon_MouseEnter;
+            NotificationIcon.MouseLeave += NotificationIcon_MouseLeave;
+            // 
             // IngredientsLbx
             // 
             IngredientsLbx.Location = new Point(26, 118);
@@ -202,16 +216,6 @@
             label1.TabIndex = 0;
             label1.Text = "Ingredients";
             // 
-            // NotificationIcon
-            // 
-            NotificationIcon.Image = Properties.Resources.notification;
-            NotificationIcon.Location = new Point(345, 18);
-            NotificationIcon.Name = "NotificationIcon";
-            NotificationIcon.Size = new Size(92, 91);
-            NotificationIcon.SizeMode = PictureBoxSizeMode.StretchImage;
-            NotificationIcon.TabIndex = 8;
-            NotificationIcon.TabStop = false;
-            // 
             // FoodManagerForm
             // 
             AutoScaleDimensions = new SizeF(14F, 27F);
@@ -227,8 +231,8 @@
             LeftPanel.ResumeLayout(false);
             RightPanel.ResumeLayout(false);
             RightPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)RecipePicture).EndInit();
             ((System.ComponentModel.ISupportInitialize)NotificationIcon).EndInit();
+            ((System.ComponentModel.ISupportInitialize)RecipePicture).EndInit();
             ResumeLayout(false);
         }
 
@@ -250,5 +254,6 @@
         private Label label1;
         private CustomUserControls.CustomListBox IngredientsLbx;
         private PictureBox NotificationIcon;
+        private ToolTip notificationTooltip;
     }
 }

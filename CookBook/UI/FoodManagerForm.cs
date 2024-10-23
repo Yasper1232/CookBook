@@ -32,18 +32,17 @@ namespace CookBook.UI
 
             _serviceProvider = serviceProvider;
             _foodManagerCache = _serviceProvider.GetRequiredService<FoodManagerCache>();
-                _desktopFileWatcher = _serviceProvider.GetRequiredService<DesktopFileWatcher>();
+            _desktopFileWatcher = _serviceProvider.GetRequiredService<DesktopFileWatcher>();
             RecipesLbx.OnSelectedItemChanged += OnSelectedRecipeChanged;
             _desktopFileWatcher.OnFileStatusChanged += OnFileStatusChanged;
-            
-            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss.fff") +"food manager form is subscribed and listening for notifications");
+
+
             NotificationIcon.Visible = DesktopFileWatcher.CurrentFileStatus;
         }
 
         private void OnFileStatusChanged(bool fileExists)
         {
 
-            Debug.WriteLine("Notification recived, file status: " + fileExists);   
 
             Invoke(new Action(() =>
             {
@@ -173,7 +172,7 @@ namespace CookBook.UI
         private void CreateShopingListBtn_Click(object sender, EventArgs e)
         {
 
-            if(!_foodManagerCache.UnavailableRecipes.Any())
+            if (!_foodManagerCache.UnavailableRecipes.Any())
             {
                 MessageBox.Show("There are no unavailable recipes !");
                 return;
@@ -181,14 +180,15 @@ namespace CookBook.UI
 
             string shopingList = "";
 
-            foreach (Recipe recipe in _foodManagerCache.UnavailableRecipes) 
+            foreach (Recipe recipe in _foodManagerCache.UnavailableRecipes)
             {
                 shopingList += $"Missing ingredients for {recipe.Name}\n";
-            var recipeIngredients = _foodManagerCache.GetIngredients(recipe.Id);
+                var recipeIngredients = _foodManagerCache.GetIngredients(recipe.Id);
 
-                foreach (var ingredient in recipeIngredients) { 
-                
-                if(ingredient.MissingAmount != 0)
+                foreach (var ingredient in recipeIngredients)
+                {
+
+                    if (ingredient.MissingAmount != 0)
                     {
 
                         shopingList += $"{ingredient.Name} {ingredient.MissingAmount}g \n";
@@ -196,7 +196,7 @@ namespace CookBook.UI
                     }
 
                     shopingList += "\n";
-                
+
                 }
 
                 try
@@ -208,21 +208,31 @@ namespace CookBook.UI
 
                     string filePath = Path.Combine(desktopPath, fileName);
 
-                    using (StreamWriter sw = new StreamWriter(filePath)) 
+                    using (StreamWriter sw = new StreamWriter(filePath))
                     {
-                    sw.Write(shopingList);
+                        sw.Write(shopingList);
                     }
 
 
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
 
                     MessageBox.Show("error while creating shopping list");
-                
+
                 }
-            
+
             }
+        }
+
+        private void NotificationIcon_MouseEnter(object sender, EventArgs e)
+        {
+            notificationTooltip.Show("You need to shop for ingredients", NotificationIcon,0,0);
+        }
+
+        private void NotificationIcon_MouseLeave(object sender, EventArgs e)
+        {
+            notificationTooltip.Hide(NotificationIcon);
         }
     }
 }
